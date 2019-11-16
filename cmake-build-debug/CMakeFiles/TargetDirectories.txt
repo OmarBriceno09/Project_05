@@ -1,0 +1,3 @@
+/cygdrive/c/Users/OmarB/Desktop/BYU-2019FALL/CS-236/Project_04/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+/cygdrive/c/Users/OmarB/Desktop/BYU-2019FALL/CS-236/Project_04/cmake-build-debug/CMakeFiles/Project_04.dir
+/cygdrive/c/Users/OmarB/Desktop/BYU-2019FALL/CS-236/Project_04/cmake-build-debug/CMakeFiles/edit_cache.dir
