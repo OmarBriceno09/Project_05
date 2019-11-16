@@ -8,6 +8,7 @@ file(REMOVE_RECURSE
   "CMakeFiles/Project_04.dir/tokenizer.cpp.o"
   "CMakeFiles/Project_04.dir/Relation.cpp.o"
   "CMakeFiles/Project_04.dir/Tuple.cpp.o"
+  "CMakeFiles/Project_04.dir/union_test.cpp.o"
   "Project_04.pdb"
   "Project_04.exe"
   "libProject_04.dll.a"

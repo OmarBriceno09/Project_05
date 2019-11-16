@@ -128,6 +128,9 @@
 		<Unit filename="/cygdrive/c/Users/OmarB/Desktop/BYU-2019FALL/CS-236/Project_04/tokenizer.cpp">
 			<Option target="Project_04"/>
 		</Unit>
+		<Unit filename="/cygdrive/c/Users/OmarB/Desktop/BYU-2019FALL/CS-236/Project_04/union_test.cpp">
+			<Option target="Project_04"/>
+		</Unit>
 		<Unit filename="/cygdrive/c/Users/OmarB/Desktop/BYU-2019FALL/CS-236/Project_04/CMakeLists.txt">
 			<Option virtualFolder="CMake Files\"/>
 		</Unit>

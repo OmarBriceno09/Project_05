@@ -45,12 +45,26 @@ string Relation::toStringTuples() {
     return the_output;
 }
 
+string Relation::toStringAttributeList() {
+    string the_output="  ";
+    for (int i=0; i<(int)attributes.size(); i++){
+        the_output += " "+attributes.at(i);
+        if (i!=(int)attributes.size()-1)
+            the_output+=", ";
+    }
+    return the_output;
+}
+
 void Relation::setAttribute(string attribute) {
     attributes.push_back (attribute);
 }
 
 string Relation::getAttribute(int i) {
     return attributes.at(i);
+}
+
+vector<string> Relation::getAttributes_vector() {
+    return attributes;
 }
 
 void Relation::setTuple(Tuple tpl) { // make sure tuple is added in alphabetical order, based on 1st element of tuple
@@ -78,9 +92,9 @@ int Relation::returnRowToInsert(Tuple tpl) {
         int curr_c = 0;
         //BE SURE TO SET THE ATTRIBUTES BEFORE PLACING TUPLES
         while (curr_c<=getCols()-1){
-            if ((tpl.get_value(curr_c).compare(tuples_list.at(curr_r).get_value(curr_c))) == 0) {
+            if ((tpl.get_value(curr_c).compare(tuples_list.at(curr_r).get_value(curr_c))) == 0) {   //if elements of tuples are ==
                 curr_c++;   //move ahead 1 col
-            } else if ((tpl.get_value(curr_c).compare(tuples_list.at(curr_r).get_value(curr_c))) > 0) {
+            } else if ((tpl.get_value(curr_c).compare(tuples_list.at(curr_r).get_value(curr_c))) > 0) { //if element is greater move to next row...
                 curr_r++;   //next row
                 curr_c = getCols(); //restart cols
             } else{// if dif < 0, stop all!!!!
@@ -206,6 +220,35 @@ void Relation::project_for_lab(vector <string> tokens,vector<string> input) {   
         project(tokens,input);
 }
 
+void Relation::rel_union(Relation rel) {
+    if (attributesMatch(rel.getAttributes_vector())){
+        rel.re_sortAttributes(attributes);
+        for(int i=0;i<(int)rel.tuples_list.size();i++){
+            setTuple(rel.tuples_list.at(i));
+        }
+    }
+}
+
+void Relation::re_sortAttributes(vector<string> new_order) {
+    if(attributesMatch(new_order)){
+        vector<Tuple> saved_list = tuples_list;
+        tuples_list.clear();
+
+        for (int i=0;i<(int)saved_list.size();i++){
+            Tuple organizedTpl;
+            for (int j=0;j<(int)new_order.size();j++){
+                for(int k=0;k<(int)attributes.size();k++){
+                    if (new_order.at(j)==attributes.at(k)) {
+                        organizedTpl.add_value(saved_list.at(i).get_value(k));
+                    }
+                }
+            }
+            setTuple(organizedTpl);
+        }
+        attributes = new_order;
+    }
+}
+
 void Relation::check_for_duplicates(vector <string> tokens,vector<string> input) {
     var_instance_list.clear();
     for (int i=0; i<(int)input.size(); i++) {
@@ -246,4 +289,12 @@ int Relation::return_var_name_index(string name) {
             index = k;
     }
     return index;
+}
+
+bool Relation::attributesMatch(vector<string> att) {
+    vector<string> v1 = attributes;
+    vector<string> v2 = att;
+    sort(v1.begin(), v1.end());
+    sort(v2.begin(), v2.end());
+    return v1 == v2;
 }

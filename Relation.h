@@ -7,6 +7,7 @@
 #include <fstream>
 #include <iostream>//for output ---- delete later
 #include <vector>
+#include <algorithm>
 #include "Tuple.h"
 
 using namespace std;
@@ -22,8 +23,10 @@ public:
     int getRows();    //returns # of Rows
     void setName(string);
     string toStringTuples();
+    string toStringAttributeList();
     void setAttribute(string);   //sets Attribute ^
     string getAttribute(int);   //gets Attribute from attributes ^
+    vector<string> getAttributes_vector();
     void setTuple(Tuple);    //adds Tuple ^s
     Tuple getTuple(int);    //gets Tuple from tuples_list ^
 
@@ -31,6 +34,9 @@ public:
     void select(vector<string>,vector<string>);
     void project(vector<string>,vector<string>);
     void project_for_lab(vector<string>,vector<string>);
+
+    void rel_union(Relation);
+    void re_sortAttributes(vector<string>);
 
     void check_for_duplicates(vector<string>,vector<string>);
 
@@ -43,6 +49,7 @@ private:
     vector <Tuple> var_instance_list; //will store list of tuples, in each 'tuple' it will state the index, or indexes of that var
     //from query
     int returnRowToInsert(Tuple);//cur row, curr col, tuple in contention
+    bool attributesMatch(vector<string>);
 };
 
 #endif //PROJECT_04_RELATION_H

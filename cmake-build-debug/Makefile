@@ -366,6 +366,33 @@ tokenizer.cpp.s:
 	$(MAKE) -f CMakeFiles/Project_04.dir/build.make CMakeFiles/Project_04.dir/tokenizer.cpp.s
 .PHONY : tokenizer.cpp.s
 
+union_test.o: union_test.cpp.o
+
+.PHONY : union_test.o
+
+# target to build an object file
+union_test.cpp.o:
+	$(MAKE) -f CMakeFiles/Project_04.dir/build.make CMakeFiles/Project_04.dir/union_test.cpp.o
+.PHONY : union_test.cpp.o
+
+union_test.i: union_test.cpp.i
+
+.PHONY : union_test.i
+
+# target to preprocess a source file
+union_test.cpp.i:
+	$(MAKE) -f CMakeFiles/Project_04.dir/build.make CMakeFiles/Project_04.dir/union_test.cpp.i
+.PHONY : union_test.cpp.i
+
+union_test.s: union_test.cpp.s
+
+.PHONY : union_test.s
+
+# target to generate assembly for a file
+union_test.cpp.s:
+	$(MAKE) -f CMakeFiles/Project_04.dir/build.make CMakeFiles/Project_04.dir/union_test.cpp.s
+.PHONY : union_test.cpp.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -402,6 +429,9 @@ help:
 	@echo "... tokenizer.o"
 	@echo "... tokenizer.i"
 	@echo "... tokenizer.s"
+	@echo "... union_test.o"
+	@echo "... union_test.i"
+	@echo "... union_test.s"
 .PHONY : help
 
 

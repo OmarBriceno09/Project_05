@@ -6,3 +6,5 @@ rename:
 	g++ rename_test.cpp Relation.cpp Tuple.cpp -o lab4_rename
 select:
 	g++ select_test.cpp Relation.cpp Tuple.cpp -o lab4_select
+union:
+	g++ union_test.cpp Relation.cpp Tuple.cpp -o lab4_union
