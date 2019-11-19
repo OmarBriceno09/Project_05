@@ -8,3 +8,5 @@ select:
 	g++ select_test.cpp Relation.cpp Tuple.cpp -o lab4_select
 union:
 	g++ union_test.cpp Relation.cpp Tuple.cpp -o lab4_union
+join:
+	g++ join_test.cpp Relation.cpp Tuple.cpp -o lab4_join

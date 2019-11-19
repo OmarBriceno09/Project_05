@@ -2,7 +2,6 @@
 // Created by OmarB on 11/16/2019.
 //
 #include <iostream>
-#include <vector>
 #include "Relation.h"
 #include "Tuple.h"
 #include <bits/stdc++.h>

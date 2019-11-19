@@ -249,6 +249,77 @@ void Relation::re_sortAttributes(vector<string> new_order) {
     }
 }
 
+void Relation::rel_join(Relation rel) {
+    vector<string> new_attributes;
+    vector<string> matched_attributes;
+    vector<int> match_att_index;
+    vector<int> other_indexes;
+    if (formNewAttributes(new_attributes,matched_attributes,match_att_index,other_indexes, attributes, rel.getAttributes_vector())) {// if some attributes match,
+        /*cout << "join is possible: " << endl;                                             //join is possible.
+        for (int i = 0; i < new_attributes.size(); i++) {
+            cout << new_attributes.at(i) << ", ";
+        }
+        cout<<endl;
+        cout<<"matched atts: "<<endl;
+        for (int i = 0; i < matched_attributes.size(); i++) {
+            cout << matched_attributes.at(i) << ", ";
+
+        }
+        cout << endl;
+        cout<<"matched atts indexes: "<<endl;
+        for (int i = 0; i < match_att_index.size(); i++) {
+            cout << match_att_index.at(i) << ", ";
+
+        }
+        cout << endl;
+        cout<<"other indexes: "<<endl;
+        for (int i = 0; i < other_indexes.size(); i++) {
+            cout << other_indexes.at(i) << ", ";
+
+        }
+        cout<<endl;
+        //debug ...*/
+        vector<Tuple> saved_list = tuples_list;
+        tuples_list.clear();
+        for (int i=0;i<(int)saved_list.size();i++){ //checks rows at this relation attribute...
+            for(int h=0;h<(int)rel.tuples_list.size();h++){
+                bool comp_match = true;
+                int j=0;
+                while((j<(int)attributes.size())&&comp_match){
+                    int k=0;
+                    while((k<(int)matched_attributes.size())&&comp_match){
+                        if (attributes.at(j) == matched_attributes.at(k)) {
+                            if (saved_list.at(i).get_value(j) != rel.tuples_list.at(h).get_value(match_att_index.at(k))) {
+                                comp_match=false;
+                            }
+                        }
+                        k++;
+                    }
+                    j++;
+                }
+                if (comp_match) {
+                    Tuple tpl;
+                    tpl = create_row_tuple(saved_list.at(i),rel.tuples_list.at(h),other_indexes);
+                    tuples_list.push_back(tpl);
+                    //cout<<tpl.toStringTuple()<<endl;
+                }
+            }
+        }
+        attributes=new_attributes;
+    }
+}
+
+Tuple Relation::create_row_tuple(Tuple origTpl, Tuple otherTpl, vector<int> other_indexes) {
+    Tuple tpl;
+    for (int i=0; i<(int)origTpl.get_size();i++){
+        tpl.add_value(origTpl.get_value(i));
+    }
+    for(int j=0;j<(int)other_indexes.size();j++){
+        tpl.add_value(otherTpl.get_value(other_indexes.at(j)));
+    }
+    return tpl;
+}
+
 void Relation::check_for_duplicates(vector <string> tokens,vector<string> input) {
     var_instance_list.clear();
     for (int i=0; i<(int)input.size(); i++) {
@@ -297,4 +368,64 @@ bool Relation::attributesMatch(vector<string> att) {
     sort(v1.begin(), v1.end());
     sort(v2.begin(), v2.end());
     return v1 == v2;
+}
+
+bool Relation::all_attributesDiffer(vector<string> att) {
+    bool none_are_equal = true;
+    vector<string> v1 = attributes;
+    vector<string> v2 = att;
+    int i=0;
+    while (i<attributes.size()&&none_are_equal){
+        int j=0;
+        while (j<att.size()&&none_are_equal){
+            if (attributes.at(i) == att.at(j))
+                none_are_equal=false;
+            j++;
+        }
+        i++;
+    }
+    return none_are_equal;
+}
+
+bool Relation::formNewAttributes(vector<string> &changed_att,vector<string> &matched_att,
+        vector<int>& match_att_index,vector<int>& other_indexes, vector<string> att1,
+        vector<string> att2) {
+    bool can_join=true;
+    if (!attributesMatch(att2)&&!all_attributesDiffer(att2)) {
+        for (int i = 0; i < (int)att1.size(); i++) {
+            for (int j = 0; j < (int)att2.size(); j++){
+                if (att1.at(i) == att2.at(j)) {
+                    match_att_index.push_back(j);//pushes back index of matching att
+                }
+            }
+        }
+        for(int q=0;q<(int)att2.size();q++){
+            if(!foundIndex(match_att_index,q)){
+                other_indexes.push_back(q);
+            }
+        }
+        //other_indexes
+        changed_att.reserve(att1.size() + att2.size());
+        changed_att.insert(changed_att.end(), att1.begin(), att1.end());
+        changed_att.insert(changed_att.end(), att2.begin(), att2.end());
+        for (int i = 0; i < (int)changed_att.size(); i++) {
+            for (int j = i + 1; j < (int)changed_att.size(); j++)
+                if (changed_att.at(i) == changed_att.at(j)) {
+                    matched_att.push_back(changed_att.at(j));
+                    changed_att.erase(changed_att.begin() + j);
+                }
+        }
+    } else
+        can_join = false;
+    return can_join;
+
+}
+
+bool Relation::foundIndex(vector<int> & vect, int val) {
+    for(int i=0;i<(int)vect.size();i++){
+        if (vect.at(i)==val){
+            return true;
+        }
+    }
+    return false;
 }

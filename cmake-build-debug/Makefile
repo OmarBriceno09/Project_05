@@ -285,6 +285,33 @@ Tuple.cpp.s:
 	$(MAKE) -f CMakeFiles/Project_04.dir/build.make CMakeFiles/Project_04.dir/Tuple.cpp.s
 .PHONY : Tuple.cpp.s
 
+join_test.o: join_test.cpp.o
+
+.PHONY : join_test.o
+
+# target to build an object file
+join_test.cpp.o:
+	$(MAKE) -f CMakeFiles/Project_04.dir/build.make CMakeFiles/Project_04.dir/join_test.cpp.o
+.PHONY : join_test.cpp.o
+
+join_test.i: join_test.cpp.i
+
+.PHONY : join_test.i
+
+# target to preprocess a source file
+join_test.cpp.i:
+	$(MAKE) -f CMakeFiles/Project_04.dir/build.make CMakeFiles/Project_04.dir/join_test.cpp.i
+.PHONY : join_test.cpp.i
+
+join_test.s: join_test.cpp.s
+
+.PHONY : join_test.s
+
+# target to generate assembly for a file
+join_test.cpp.s:
+	$(MAKE) -f CMakeFiles/Project_04.dir/build.make CMakeFiles/Project_04.dir/join_test.cpp.s
+.PHONY : join_test.cpp.s
+
 main.o: main.cpp.o
 
 .PHONY : main.o
@@ -420,6 +447,9 @@ help:
 	@echo "... Tuple.o"
 	@echo "... Tuple.i"
 	@echo "... Tuple.s"
+	@echo "... join_test.o"
+	@echo "... join_test.i"
+	@echo "... join_test.s"
 	@echo "... main.o"
 	@echo "... main.i"
 	@echo "... main.s"

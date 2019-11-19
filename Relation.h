@@ -38,6 +38,8 @@ public:
     void rel_union(Relation);
     void re_sortAttributes(vector<string>);
 
+    void rel_join(Relation);
+
     void check_for_duplicates(vector<string>,vector<string>);
 
     int return_var_name_index(string);
@@ -50,6 +52,10 @@ private:
     //from query
     int returnRowToInsert(Tuple);//cur row, curr col, tuple in contention
     bool attributesMatch(vector<string>);
+    bool all_attributesDiffer(vector<string>);
+    bool foundIndex(vector<int>&,int);
+    Tuple create_row_tuple(Tuple,Tuple,vector<int>);
+    bool formNewAttributes(vector<string>&,vector<string>&,vector<int>&,vector<int>&,vector<string>,vector<string>);
 };
 
 #endif //PROJECT_04_RELATION_H
