@@ -386,9 +386,9 @@ bool Relation::all_attributesDiffer(vector<string> att) {
     vector<string> v1 = attributes;
     vector<string> v2 = att;
     int i=0;
-    while (i<attributes.size()&&none_are_equal){
+    while (i<(int)attributes.size()&&none_are_equal){
         int j=0;
-        while (j<att.size()&&none_are_equal){
+        while (j<(int)att.size()&&none_are_equal){
             if (attributes.at(i) == att.at(j))
                 none_are_equal=false;
             j++;
