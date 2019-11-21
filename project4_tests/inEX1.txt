@@ -1,0 +1,24 @@
+Schemes:
+  meal(type, entree, side)
+  Day(first, second, third)
+  Grocery(item)
+
+Facts:
+  meal('breakfast', 'eggs', 'bacon').
+  meal('breakfast', 'oatmeal', 'apple').
+  meal('lunch', 'sandwich', 'banana').
+  meal('lunch', 'pasta', 'soup').
+  meal('dinner', 'pasta', 'broccoli').
+  Day('ice cream', 'cookies', 'cake').
+
+Rules:
+     Day(x,y,z) :- 
+meal('breakfast', x, a),
+meal('lunch', y, b),
+meal('dinner', z, c).
+     Grocery(food) :- meal(r, food, s).
+     Grocery(food) :- meal(r, s, food).
+
+Queries:
+     Day(same, same, same)?
+     Grocery('broccoli')?

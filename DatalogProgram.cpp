@@ -26,9 +26,12 @@ DatalogProgram::DatalogProgram(vector<string> &token_type, vector<string> &token
                             out_flow += "\n" + token_input[tk_num] + "(";
                             tk_num++;
                             if (token_type[tk_num] == "COLON") {
-                                rule_flow += token_input[tk_num]; //begin fact flow
+                                //rule_flow += token_input[tk_num]; //begin fact flow - comment out for project 4
                                 tk_num++;
+                                project_4_output+="Rule Evaluation\n";
                                 ruleList(tk_num, token_type, token_input, token_linenum);
+                                int passes = evaluate_all_rules();//evaluate all rules once outside of rule list
+                                project_4_output+="\nSchemes populated after "+to_string(passes)+" passes through the Rules.\n\n";
                                 out_flow +=
                                         to_string(rule_count) + ")" + rule_flow; //append rule flow with nums of facts
                                 if (token_type[tk_num] == "QUERIES") { //QUERIES COLON query queryList
@@ -37,6 +40,7 @@ DatalogProgram::DatalogProgram(vector<string> &token_type, vector<string> &token
                                     if (token_type[tk_num] == "COLON") {
                                         query_flow += token_input[tk_num];
                                         tk_num++;
+                                        project_3_output+="Query Evaluation\n";
                                         query(tk_num, token_type, token_input, token_linenum);
                                         queryList(tk_num, token_type, token_input, token_linenum);
                                         out_flow += to_string(query_count) + ")" +
@@ -100,9 +104,13 @@ void DatalogProgram::factList(int &tk_num, vector<string> &token_type, vector<st
 void DatalogProgram::ruleList(int &tk_num, vector<string> &token_type, vector<string> &token_input, vector<int> &token_linenum){
     if (does_token_match(token_type[tk_num], rlL_first, 2)) { //if its any first of fctList
         if(token_type[tk_num] == "ID"){//do not count token bc line is not passed
-            //rule(tk_num,token_type,token_input,token_linenum);
+
             Rule rule(tk_num,token_type,token_input,token_linenum);    //creating instance of rule
-            rule_flow+=rule.out_rule();
+            rule_list.push_back(rule);
+            //evaluate_rule(rule);
+            //project_4_output += "EVALUATED\n";
+            //cout<<project_4_output<<endl;
+            rule_flow+=rule.out_rule();//without \n orig
             rule_count = rule.get_rule_count();
             //Make rule object here by placing in the inputs-------------------------------------------------------------------
             ruleList(tk_num,token_type,token_input,token_linenum);
@@ -112,6 +120,64 @@ void DatalogProgram::ruleList(int &tk_num, vector<string> &token_type, vector<st
     }else if (!does_token_match(token_type[tk_num],rlL_follow,11)){
         throw tk_num;
     }
+}
+
+int DatalogProgram::evaluate_all_rules() {
+    bool changed=true;
+    vector<bool> evaluations_changed; //<- if all evaluated rules are 0, then it changed becomes false;
+    int iter=0;
+    while(changed){
+        iter++;
+        evaluations_changed.clear();
+        for(int i=0;i<(int)rule_list.size();i++){
+            bool temp = evaluate_rule(rule_list.at(i));
+            evaluations_changed.push_back(temp);// each rule is evaluated, and its result
+        }                                                                     //is pushed back to the vector
+        if(all_of(evaluations_changed.begin(), evaluations_changed.end(), [](bool v) { return !v; }))
+            changed = false;
+    }
+    return iter;
+}
+
+
+bool DatalogProgram::evaluate_rule(Rule& rule) {
+    bool changed_database = false; //false is database is not changed, if all rules eval output false, STOP EVAL
+    int main_rel_indx = return_matching_relation_index(rule.main_relation_name);
+    vector<string> saved_rule_rel_att = relation_list.at(main_rel_indx).getAttributes_vector();
+    vector<string> rule_rel_att_tkns = rule.main_changed_att_tkns;
+    relation_list.at(main_rel_indx).rename(rule_rel_att_tkns,rule.main_changed_attributes);//changes attributes to vars
+    int rel_1_indx = return_matching_relation_index(rule.relations_names.at(0));
+    Relation relation_copy1 = relation_list.at(rel_1_indx);//-------------CURRENT RELATION COPY
+    vector<string> rel_c1_tkns = rule.resp_rel_att_tkns.at(0);
+    evaluate_predicates(rel_c1_tkns,rule.resp_rel_attributes.at(0),relation_copy1);
+    for(int i=0;i<(int)rule.relations_names.size();i++){
+        rel_1_indx = return_matching_relation_index(rule.relations_names.at(i));
+        if(i>0){
+            Relation relation_copy2 = relation_list.at(rel_1_indx);//-------------IMPORTANT
+            vector<string> rel_c2_tkns = rule.resp_rel_att_tkns.at(i);
+            evaluate_predicates(rel_c2_tkns,rule.resp_rel_attributes.at(i),relation_copy2);
+            relation_copy1.rel_join(relation_copy2);
+        }
+    }
+    vector<string> tkns_for_project;
+    for(int i=0;i<(int)relation_copy1.getAttributes_vector().size();i++){
+        string id_pr = "STRING";
+        for(int j=0;j<(int)rule.main_changed_attributes.size();j++){
+            if (relation_copy1.getAttributes_vector().at(i)==rule.main_changed_attributes.at(j)){
+                id_pr = "ID";
+            }
+        }
+        tkns_for_project.push_back(id_pr);
+    }
+    relation_copy1.project(tkns_for_project,relation_copy1.getAttributes_vector());//risky might just use eval predicates
+    //bool new_tuples = false;
+    if(relation_list.at(main_rel_indx).rel_union(relation_copy1)>0)
+        changed_database = true;
+    relation_copy1.rename(rule_rel_att_tkns, saved_rule_rel_att);
+    relation_list.at(main_rel_indx).rename(rule_rel_att_tkns, saved_rule_rel_att);
+    project_4_output+= rule.out_rule()+"\n";
+    project_4_output+=relation_list.at(main_rel_indx).toStringNewTuples();//.toStringNewTuples();
+    return changed_database;
 }
 
 //query queryList | lambda
@@ -211,13 +277,20 @@ void DatalogProgram::evaluate_query(vector <string> &token_list, vector <string>
                                     string query_string) {
     //relation_list.at(curr_rel_index).rename(token_list, parameter_list);
     Relation relation_copy1 = relation_list.at(curr_rel_index);
-    relation_copy1.select(token_list, parameter_list);
+    //thee_big_three
+    evaluate_predicates(token_list,parameter_list,relation_copy1);
+    /*relation_copy1.select(token_list, parameter_list);
     relation_copy1.project_for_lab(token_list,parameter_list);
-    //maybe change later
-    relation_copy1.rename(token_list, parameter_list);
-    project_3_output+=relation_toString(relation_copy1,query_string, token_list); // the OUTPUT
+    relation_copy1.rename(token_list, parameter_list);*/
+    project_3_output+=query_toString(relation_copy1,query_string, token_list); // the OUTPUT
 }
 //  ----------------- end query evaluation ---------------------------------------------------------------
+void DatalogProgram::evaluate_predicates(vector<string> &token_list, vector<string> &parameter_list, Relation &rel) {
+    rel.select(token_list, parameter_list);
+    rel.project_for_lab(token_list,parameter_list);
+    rel.rename(token_list, parameter_list);
+}
+
 
 //COMMA STRING stringList | lambda
 void DatalogProgram::stringList(int &tk_num, vector<string> &token_type, vector<string> &token_input,
@@ -277,7 +350,11 @@ string DatalogProgram::project_3_string() {
     return project_3_output;
 }
 
-string DatalogProgram::relation_toString(Relation & the_relation, string query_string, vector<string> tokens) {
+string DatalogProgram::project_4_string() {
+    return project_4_output;
+}
+
+string DatalogProgram::query_toString(Relation & the_relation, string query_string, vector<string> tokens) {
     string rel_string = "";
     rel_string += query_string+"? ";
     if (!the_relation.getRows())

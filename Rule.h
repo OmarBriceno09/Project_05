@@ -6,6 +6,7 @@
 #define PROJECT_04_RULE_H
 #include <fstream>
 #include <vector>
+#include "Relation.h"
 #include "Predicate.h"
 using namespace std;
 
@@ -20,6 +21,13 @@ public:
 
     string the_headPredicate="";
     vector <string> the_predicateList;
+
+    string main_relation_name="";
+    vector <string> main_changed_attributes;
+    vector <string> main_changed_att_tkns;
+    vector <string> relations_names;
+    vector <vector<string>> resp_rel_attributes;
+    vector <vector<string>> resp_rel_att_tkns;
 
 private:
     string this_rule_flow="";

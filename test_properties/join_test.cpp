@@ -15,14 +15,16 @@ void beta_test();
 void gamma_test();
 void delta_test();
 void epsilon_test();
+void idkwhatcomesnext();
 
 int main(int argc, char **argv) {
     cout<<"--------------PROJECT 04 - JOIN TESTER---------------------------"<<endl;
-    alpha_test();
+    //alpha_test();
     beta_test();
-    gamma_test();
-    delta_test();
-    epsilon_test();
+    //gamma_test();
+    //delta_test();
+    //epsilon_test();
+    idkwhatcomesnext();
 }
 
 void alpha_test(){
@@ -224,27 +226,67 @@ void delta_test(){
 
 void epsilon_test(){
     cout<<"Example 5: Join of two medium sized relations have NO attributes in common."<<endl;
-    cout<<"NOTE: RELATION J SHOULD NOT CHANGE, KEEP THIS IN MIND WHEN APPLYING TO PROJECT 4!!!!"<<endl;
+    cout<<"NOTE: They should join!!!"<<endl;
     Relation rel_J("J");
     rel_J.setAttribute("'A'");
     rel_J.setAttribute("'B'");
     rel_J.setAttribute("'C'");
-    int r_a[1][3] = {{2,2,2}};
+    int r_a[2][3] = {{2,2,2},{3,2,1}};
     Tuple tpl_a;
     add_values_to_tuple(tpl_a,r_a[0],3);
+    rel_J.setTuple(tpl_a);
+    Tuple tpl_b;
+    add_values_to_tuple(tpl_b,r_a[1],3);
+    rel_J.setTuple(tpl_b);
+    cout<<"relation: "<<rel_J.getName()<<endl;
+    cout<<"attributes: "<<rel_J.toStringAttributeList()<<endl;
+    cout<<rel_J.toStringTuples()<<endl;
+
+    Relation rel_K("K");    // relation Bcle
+    rel_K.setAttribute("'X'");//c
+    rel_K.setAttribute("'Y'");//d
+    int r1[3][2] = {{1,2},{4,5},{7,8}};
+    Tuple tpl1;
+    add_values_to_tuple(tpl1,r1[0],2);
+    rel_K.setTuple(tpl1);
+    Tuple tpl2;
+    add_values_to_tuple(tpl2,r1[1],2);
+    rel_K.setTuple(tpl2);
+    Tuple tpl3;
+    add_values_to_tuple(tpl3,r1[2],2);
+    rel_K.setTuple(tpl3);
+    cout<<"relation: "<<rel_K.getName()<<endl;
+    cout<<"attributes: "<<rel_K.toStringAttributeList()<<endl;
+    cout<<rel_K.toStringTuples()<<endl;
+
+    rel_J.rel_join(rel_K);
+    cout<<"relation: "<<rel_J.getName()<<endl;
+    cout<<"attributes: "<<rel_J.toStringAttributeList()<<endl;
+    cout<<rel_J.toStringTuples()<<endl;
+    cout<<endl;
+}
+
+void idkwhatcomesnext(){
+    cout<<"THE FINAL EXAMPLE"<<endl;
+    Relation rel_J("a");
+    rel_J.setAttribute("x");
+    rel_J.setAttribute("y");
+    int r_a[1][2] = {{1,1}};
+    Tuple tpl_a;
+    add_values_to_tuple(tpl_a,r_a[0],2);
     rel_J.setTuple(tpl_a);
     cout<<"relation: "<<rel_J.getName()<<endl;
     cout<<"attributes: "<<rel_J.toStringAttributeList()<<endl;
     cout<<rel_J.toStringTuples()<<endl;
 
-    Relation rel_K("K");    // relation B
-    rel_K.setAttribute("'X'");//c
-    rel_K.setAttribute("'Y'");//d
-    rel_K.setAttribute("'Z'");//b
-    int r1[1][3] = {{1,2,3}};
+    Relation rel_K("b");    // relation B
+    rel_K.setAttribute("x");//c
+    rel_K.setAttribute("y");//d
+    int r1[1][2] = {{1,2}};
     Tuple tpl1;
-    add_values_to_tuple(tpl1,r1[0],3);
+    add_values_to_tuple(tpl1,r1[0],2);
     rel_K.setTuple(tpl1);
+
     cout<<"relation: "<<rel_K.getName()<<endl;
     cout<<"attributes: "<<rel_K.toStringAttributeList()<<endl;
     cout<<rel_K.toStringTuples()<<endl;

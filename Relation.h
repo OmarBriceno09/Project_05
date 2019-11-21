@@ -23,19 +23,21 @@ public:
     int getRows();    //returns # of Rows
     void setName(string);
     string toStringTuples();
+    string toStringNewTuples();
     string toStringAttributeList();
     void setAttribute(string);   //sets Attribute ^
     string getAttribute(int);   //gets Attribute from attributes ^
     vector<string> getAttributes_vector();
-    void setTuple(Tuple);    //adds Tuple ^s
-    Tuple getTuple(int);    //gets Tuple from tuples_list ^
+    int setTuple(Tuple);    //adds Tuple ^s
+    Tuple getTuple(int);    //gets Tuple from tuples_list
+    void clearTuples();
 
     void rename(vector<string>,vector<string>);
     void select(vector<string>,vector<string>);
     void project(vector<string>,vector<string>);
     void project_for_lab(vector<string>,vector<string>);
 
-    void rel_union(Relation);
+    int rel_union(Relation);
     void re_sortAttributes(vector<string>);
 
     void rel_join(Relation);
@@ -49,6 +51,7 @@ private:
     vector <string> attributes;
     vector <Tuple> tuples_list;
     vector <Tuple> var_instance_list; //will store list of tuples, in each 'tuple' it will state the index, or indexes of that var
+    vector <int> union_n_inserted_tuples_indexes;
     //from query
     int returnRowToInsert(Tuple);//cur row, curr col, tuple in contention
     bool attributesMatch(vector<string>);

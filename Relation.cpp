@@ -45,6 +45,31 @@ string Relation::toStringTuples() {
     return the_output;
 }
 
+string Relation::toStringNewTuples() {
+    string the_output="";
+    for (int i=0; i<(int)tuples_list.size(); i++){
+        if(foundIndex(union_n_inserted_tuples_indexes,i)) {
+            the_output += "  ";
+            for (int j = 0; j < (int) attributes.size(); j++) {
+                the_output += attributes.at(j) + "=" + tuples_list.at(i).get_value(j);
+                if (j != (int) attributes.size() - 1)
+                    the_output += ", ";
+            }
+            the_output += "\n";
+        }
+    }
+    //debug
+    /*cout<<"the new tuples"<<endl;
+    for(int j=0;j<(int)union_n_inserted_tuples_indexes.size();j++){
+        int x = union_n_inserted_tuples_indexes.at(j);
+        cout<<"at ["<<x<<"]:"<<getTuple(x).toStringTuple()<<endl;
+    }
+    cout<<"vs"<<endl;
+    cout<<toStringTuples()<<endl;
+    */
+    return the_output;
+}
+
 string Relation::toStringAttributeList() {
     string the_output="  ";
     for (int i=0; i<(int)attributes.size(); i++){
@@ -67,7 +92,8 @@ vector<string> Relation::getAttributes_vector() {
     return attributes;
 }
 
-void Relation::setTuple(Tuple tpl) { // make sure tuple is added in alphabetical order, based on 1st element of tuple
+int Relation::setTuple(Tuple tpl) { // make sure tuple is added in alphabetical order, based on 1st element of tuple
+    int insert_index=-1;
     bool does_it_match = false;
     for (int i=0; i<getRows(); i++){
         if (tpl.getValuesList() == getTuple(i).getValuesList()) {
@@ -75,9 +101,14 @@ void Relation::setTuple(Tuple tpl) { // make sure tuple is added in alphabetical
         }
     }
     if (!does_it_match) {
-        int insert_index = returnRowToInsert(tpl);  //row of insertion is determined here, ordered alphabetically
+        insert_index = returnRowToInsert(tpl);  //row of insertion is determined here, ordered alphabetically
         tuples_list.insert(tuples_list.begin() + insert_index, tpl);
     }
+    return insert_index;
+}
+
+void Relation::clearTuples() {
+    tuples_list.clear();
 }
 
 Tuple Relation::getTuple(int i) {
@@ -113,18 +144,15 @@ int Relation::returnRowToInsert(Tuple tpl) {
 
 void Relation::rename(vector <string> tokens,vector<string> input) {    //length has to match!!!
     check_for_duplicates(tokens,input);
-    int attribute_index = 0;
+    int attribute_index = 0;    // in case list has changes and token list doesn't reflect col change
     for(int i=0;i<(int)tokens.size();i++){
         if (tokens.at(i) == "ID"){  // any chars in the input will result in removed cols
-            int curr_id_i = return_var_name_index(input.at(i)); //returns index of var in var_instance_list
-            if (i== stoi(var_instance_list.at(curr_id_i).get_value(0))){
-                if(attributes.at(attribute_index) != input.at(i)){
-                    attributes.at(attribute_index) = input.at(i); //Renaming Takes Place
-                    attribute_index++;
-                }
+            int curr_tkn_index = return_var_name_index(input.at(i)); //returns index of var in var_instance_list
+            int index_of_orig_for_tkn =  stoi(var_instance_list.at(curr_tkn_index).get_value(0));//index of org
+            if (i == index_of_orig_for_tkn) {
+                attributes.at(attribute_index) = input.at(i); //Renaming Takes Place
+                attribute_index++;
             }
-        }else if (tokens.size() == attributes.size()){
-            attribute_index++;
         }
     }
 }
@@ -189,9 +217,11 @@ void Relation::project(vector <string> tokens,vector<string> input) {
             if (var_instance_list.at(curr_id_i).get_size()>1) {// if variables repeat in the query
                 if (i!= stoi(var_instance_list.at(curr_id_i).get_value(0))){// if the current index of i is not equal to
                     attributes.erase(attributes.begin()+attribute_index);//the index of where the first instance of that
+
                     for (int j=0;j<(int)tuples_list.size();j++){              //variable appeared, delete the column.
                         tuples_list.at(j).remove_value(attribute_index);
                     }
+
                     was_deleted = true;
                 }
 
@@ -220,13 +250,17 @@ void Relation::project_for_lab(vector <string> tokens,vector<string> input) {   
         project(tokens,input);
 }
 
-void Relation::rel_union(Relation rel) {
+int Relation::rel_union(Relation rel) {
+    union_n_inserted_tuples_indexes.clear();
     if (attributesMatch(rel.getAttributes_vector())){
         rel.re_sortAttributes(attributes);
         for(int i=0;i<(int)rel.tuples_list.size();i++){
-            setTuple(rel.tuples_list.at(i));
+            int new_index =setTuple(rel.tuples_list.at(i));
+            if (new_index>-1)   //adds i to list if does not match already placed tuples
+                union_n_inserted_tuples_indexes.push_back(new_index);
         }
     }
+    return union_n_inserted_tuples_indexes.size();
 }
 
 void Relation::re_sortAttributes(vector<string> new_order) {
@@ -255,30 +289,6 @@ void Relation::rel_join(Relation rel) {
     vector<int> match_att_index;
     vector<int> other_indexes;
     if (formNewAttributes(new_attributes,matched_attributes,match_att_index,other_indexes, attributes, rel.getAttributes_vector())) {// if some attributes match,
-        /*cout << "join is possible: " << endl;                                             //join is possible.
-        for (int i = 0; i < new_attributes.size(); i++) {
-            cout << new_attributes.at(i) << ", ";
-        }
-        cout<<endl;
-        cout<<"matched atts: "<<endl;
-        for (int i = 0; i < matched_attributes.size(); i++) {
-            cout << matched_attributes.at(i) << ", ";
-
-        }
-        cout << endl;
-        cout<<"matched atts indexes: "<<endl;
-        for (int i = 0; i < match_att_index.size(); i++) {
-            cout << match_att_index.at(i) << ", ";
-
-        }
-        cout << endl;
-        cout<<"other indexes: "<<endl;
-        for (int i = 0; i < other_indexes.size(); i++) {
-            cout << other_indexes.at(i) << ", ";
-
-        }
-        cout<<endl;
-        //debug ...*/
         vector<Tuple> saved_list = tuples_list;
         tuples_list.clear();
         for (int i=0;i<(int)saved_list.size();i++){ //checks rows at this relation attribute...
@@ -346,7 +356,8 @@ void Relation::check_for_duplicates(vector <string> tokens,vector<string> input)
     }
 
     //printing var_instance_list, will erase eventually
-    /*for (int k=0; k<var_instance_list.size(); k++) {
+    /*cout<<"CHECKING DUPLS"<<endl;
+    for (int k=0; k<var_instance_list.size(); k++) {
         cout<<" "<<var_instance_list.at(k).get_var_name()<<": "<<var_instance_list.at(k).toStringTuple()<<endl;
     }
     cout<<"ok if no tokens..."<<endl;
@@ -391,7 +402,7 @@ bool Relation::formNewAttributes(vector<string> &changed_att,vector<string> &mat
         vector<int>& match_att_index,vector<int>& other_indexes, vector<string> att1,
         vector<string> att2) {
     bool can_join=true;
-    if (!attributesMatch(att2)&&!all_attributesDiffer(att2)) {
+    if (!attributesMatch(att2)/*&&!all_attributesDiffer(att2)*/) {
         for (int i = 0; i < (int)att1.size(); i++) {
             for (int j = 0; j < (int)att2.size(); j++){
                 if (att1.at(i) == att2.at(j)) {

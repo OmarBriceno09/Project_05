@@ -16,11 +16,13 @@ void add_values_to_tuple(Tuple&,int*,int);
 
 void beta();
 void alpha();
+void gamma();
 
 int main(int argc, char **argv) {
     cout<<"--------------UNIT TEST 2 - RENAME OPERATOR---------------------------"<<endl;
     beta();
     alpha();
+    gamma();
 }
 
 void beta(){
@@ -76,6 +78,25 @@ void alpha(){
     Relation relation_copy1 = example2;
     relation_copy1.rename(tk_vector1,rename_vector1);
     cout<<relation_copy1.toStringTuples()<<endl;
+}
+
+void gamma(){
+    Relation example3("Gamma");
+    example3.setAttribute("S");
+    example3.setAttribute("N");
+    example3.setAttribute("A");
+    example3.setAttribute("P");
+    example3.setAttribute("C");
+    example3.setAttribute("G");
+    cout<<example3.getName()<<": "<<endl;
+    cout<<example3.toStringAttributeList()<<endl;
+
+    cout<<"Example 2, rename all attributes to S,n,A,P,c,G on "<<example3.getName()<<": "<<endl;
+    vector<string> rename_vector1 = {"S","n","A","P","c","G"};
+    vector<string> tk_vector1 = {"ID","ID","ID","ID","ID","ID"};
+    Relation relation_copy1 = example3;
+    relation_copy1.rename(tk_vector1,rename_vector1);
+    cout<<relation_copy1.toStringAttributeList()<<endl;
 }
 
 void add_values_to_tuple(Tuple& tpl,int* array, int len){

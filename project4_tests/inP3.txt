@@ -1,0 +1,11 @@
+Schemes:
+   abcde(a,b,c,d,e)
+Facts:
+   abcde('a','b','c','d','e').
+   abcde('s','t','r','r','s').
+   abcde('t','t','t','t','t').
+   abcde('g','t','g','h','g').
+   abcde('m','n','m','n','m').
+Rules:
+Queries:
+   abcde(X,'t',X,Y,X)?

@@ -4,6 +4,7 @@
 
 #ifndef PROJECT_04_PREDICATE_H
 #define PROJECT_04_PREDICATE_H
+#include <iostream>
 #include <fstream>
 #include <vector>
 #include "Parameter.h"

@@ -1,0 +1,20 @@
+
+
+Schemes:
+  parent(father,son)
+  ancestor(old,young)
+
+Facts:
+  parent('adam', 'seth').
+  parent('seth', 'enos').
+  parent('enos', 'kenan').
+  parent('kenan', 'mahalalel').
+  parent('mahalalel', 'jared').
+
+Rules:
+  ancestor(x, z) :- parent(x, y), ancestor(y, z).
+  ancestor(x, y) :- parent(x, y).
+
+Queries:
+  ancestor('adam', who)?
+  ancestor(all1, all2)?

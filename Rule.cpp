@@ -7,6 +7,7 @@
 int Rule::rule_count{0};
 
 Rule::Rule(int &tk_num, vector<string> &token_type, vector<string> &token_input, vector<int> &token_linenum) {
+    main_relation_name = token_input[tk_num];
     the_rule(tk_num,token_type,token_input,token_linenum);
     set_rule_count(rule_count+1);
 }
@@ -16,12 +17,15 @@ Rule::~Rule() {
 
 void Rule::the_rule(int &tk_num, vector<string> &token_type, vector<string> &token_input, vector<int> &token_linenum) {
     if(token_type[tk_num]==rl_first) { //if its ID
-        this_rule_flow += "\n  ";
+        this_rule_flow += "";//"\n";
         headPredicate(tk_num,token_type,token_input,token_linenum);
         if(token_type[tk_num] == "COLON_DASH") {
             this_rule_flow +=" "+token_input[tk_num]+" ";
             tk_num++;
             Predicate predicate(tk_num,token_type,token_input,token_linenum);
+            relations_names.push_back(predicate.id);    //-------------------------------------------------------------
+            resp_rel_attributes.push_back(predicate.the_parameter_list);//---------------------------------------------
+            resp_rel_att_tkns.push_back(predicate.params_tkn_type);//-------------------------------------------------
             the_predicateList.push_back(predicate.return_the_predicate());
             this_rule_flow += predicate.return_the_predicate();
             predicateList(tk_num,token_type,token_input,token_linenum);
@@ -45,6 +49,8 @@ void Rule::headPredicate(int &tk_num, vector<string> &token_type, vector<string>
                 tk_num++;
                 if (token_type[tk_num] == "ID") {//first 1
                     the_headPredicate += token_input[tk_num];
+                    main_changed_attributes.push_back(token_input[tk_num]); //------------------------------------------
+                    main_changed_att_tkns.push_back(token_type[tk_num]);//----------------------------------------------
                     tk_num++;
                     idList(tk_num,token_type,token_input,token_linenum, the_headPredicate);
                     if (token_type[tk_num] == "RIGHT_PAREN") {//first 1
@@ -66,6 +72,9 @@ void Rule::predicateList(int &tk_num, vector<string> &token_type, vector<string>
             this_rule_flow+=token_input[tk_num];
             tk_num++;
             Predicate predicate(tk_num,token_type,token_input,token_linenum);
+            relations_names.push_back(predicate.id);//-----------------------------------------------------------------
+            resp_rel_attributes.push_back(predicate.the_parameter_list);//---------------------------------------------
+            resp_rel_att_tkns.push_back(predicate.params_tkn_type);//-------------------------------------------------
             the_predicateList.push_back(predicate.return_the_predicate());
             this_rule_flow += predicate.return_the_predicate();
             predicateList(tk_num,token_type,token_input,token_linenum);
@@ -85,6 +94,8 @@ void Rule::idList(int &tk_num, vector<string> &token_type, vector<string> &token
             tk_num++;
             if(token_type[tk_num] == "ID") {//STRING
                 curr_out_flow+=token_input[tk_num];
+                main_changed_attributes.push_back(token_input[tk_num]);//-----------------------------------------------
+                main_changed_att_tkns.push_back(token_type[tk_num]);//--------------------------------------------------
                 tk_num++;
                 idList(tk_num,token_type,token_input,token_linenum, curr_out_flow);
             }else{throw tk_num;}

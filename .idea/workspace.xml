@@ -12,23 +12,23 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="a05e7611-8bd4-44f9-979a-b7465cb116a2" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/join_test.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/Makefile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DatalogProgram.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/DatalogProgram.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DatalogProgram.h" beforeDir="false" afterPath="$PROJECT_DIR$/DatalogProgram.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Predicate.h" beforeDir="false" afterPath="$PROJECT_DIR$/Predicate.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Relation.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Relation.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Relation.h" beforeDir="false" afterPath="$PROJECT_DIR$/Relation.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/Makefile2" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/Makefile2" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/Project_04.dir/DependInfo.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/Project_04.dir/DependInfo.cmake" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/Project_04.dir/build.make" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/Project_04.dir/build.make" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/Project_04.dir/cmake_clean.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/Project_04.dir/cmake_clean.cmake" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/Project_04.dir/link.txt" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/Project_04.dir/link.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/Project_04.dir/progress.make" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/Project_04.dir/progress.make" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/progress.marks" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/progress.marks" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/Makefile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmake-build-debug/Project_04.cbp" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/Project_04.cbp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lab4_union.exe" beforeDir="false" afterPath="$PROJECT_DIR$/lab4_union.exe" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/union_test.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/union_test.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Rule.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Rule.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Rule.h" beforeDir="false" afterPath="$PROJECT_DIR$/Rule.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/actual.txt" beforeDir="false" afterPath="$PROJECT_DIR$/actual.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/join_test.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/lab4_join.exe" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/lab4_union.exe" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/main.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/project_test.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/rename_test.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/select_test.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/union_test.cpp" beforeDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -38,6 +38,20 @@
   </component>
   <component name="ClangdSettings">
     <option name="formatViaClangd" value="false" />
+  </component>
+  <component name="DatabaseView">
+    <option name="SHOW_INTERMEDIATE" value="true" />
+    <option name="GROUP_DATA_SOURCES" value="true" />
+    <option name="GROUP_SCHEMA" value="true" />
+    <option name="GROUP_CONTENTS" value="false" />
+    <option name="SORT_POSITIONED" value="false" />
+    <option name="SHOW_EMPTY_GROUPS" value="false" />
+    <option name="AUTO_SCROLL_FROM_SOURCE" value="false" />
+    <option name="HIDDEN_KINDS">
+      <set />
+    </option>
+    <expand />
+    <select />
   </component>
   <component name="ExecutionTargetManager" SELECTED_TARGET="CMakeBuildProfile:Debug" />
   <component name="Git.Settings">
@@ -90,6 +104,10 @@
       <workItem from="1573931263466" duration="12723000" />
       <workItem from="1574119964833" duration="349000" />
       <workItem from="1574124837886" duration="16650000" />
+      <workItem from="1574210897649" duration="9840000" />
+      <workItem from="1574220804639" duration="1798000" />
+      <workItem from="1574293179923" duration="20098000" />
+      <workItem from="1574353714395" duration="20319000" />
     </task>
     <servers />
   </component>
