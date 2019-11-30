@@ -8,11 +8,8 @@ Relation::Relation(string nm) {
     setName(nm);
 }
 
-/*Relation::Relation(Relation & relation) {
-    Relation& operator = (Relation & relation){};
-}*/
-
 Relation::~Relation() {
+
 }
 
 int Relation::getCols() {
@@ -70,6 +67,10 @@ string Relation::toStringNewTuples() {
     return the_output;
 }
 
+int Relation::getNumberOfNewTuples(){
+    return union_n_inserted_tuples_indexes.size();
+}
+
 string Relation::toStringAttributeList() {
     string the_output="  ";
     for (int i=0; i<(int)attributes.size(); i++){
@@ -84,6 +85,10 @@ void Relation::setAttribute(string attribute) {
     attributes.push_back (attribute);
 }
 
+void Relation::setAttribute_as_vector(vector<string> atts) {
+    attributes = atts;
+}
+
 string Relation::getAttribute(int i) {
     return attributes.at(i);
 }
@@ -93,18 +98,27 @@ vector<string> Relation::getAttributes_vector() {
 }
 
 int Relation::setTuple(Tuple tpl) { // make sure tuple is added in alphabetical order, based on 1st element of tuple
-    int insert_index=-1;
-    bool does_it_match = false;
-    for (int i=0; i<getRows(); i++){
-        if (tpl.getValuesList() == getTuple(i).getValuesList()) {
-            does_it_match = true;
-        }
-    }
+    int insert_index=-1;//compares current tuple with all others and checks for match
+    bool does_it_match = does_match_tuples(tpl);//compares current tuple with all others and checks for match
     if (!does_it_match) {
         insert_index = returnRowToInsert(tpl);  //row of insertion is determined here, ordered alphabetically
         tuples_list.insert(tuples_list.begin() + insert_index, tpl);
     }
     return insert_index;
+}
+
+bool Relation::does_match_tuples(Tuple tpl) {// compare all but indx
+    bool does_it_match = false;
+    for (int i=0; i<getRows(); i++){    //compares current tuple with all others and checks for match
+        if (tpl.getValuesList() == getTuple(i).getValuesList()) {// compare all but index
+            does_it_match = true;
+        }
+    }
+    return does_it_match;
+}
+
+void Relation::removeTuple(int i) {
+    tuples_list.erase(tuples_list.begin()+i);
 }
 
 void Relation::clearTuples() {
@@ -143,7 +157,7 @@ int Relation::returnRowToInsert(Tuple tpl) {
 }
 
 void Relation::rename(vector <string> tokens,vector<string> input) {    //length has to match!!!
-    check_for_duplicates(tokens,input);
+    check_for_duplicates_in_query(tokens,input);
     int attribute_index = 0;    // in case list has changes and token list doesn't reflect col change
     for(int i=0;i<(int)tokens.size();i++){
         if (tokens.at(i) == "ID"){  // any chars in the input will result in removed cols
@@ -158,7 +172,7 @@ void Relation::rename(vector <string> tokens,vector<string> input) {    //length
 }
 
 void Relation::select(vector <string> tokens,vector<string> input) {
-    check_for_duplicates(tokens,input);
+    check_for_duplicates_in_query(tokens,input);
     for(int i=0;i<(int)attributes.size();i++){
         if (tokens.at(i) == "STRING"){
             for (int j=0;j<(int)tuples_list.size();j++){
@@ -202,40 +216,44 @@ void Relation::select(vector <string> tokens,vector<string> input) {
 }
 
 void Relation::project(vector <string> tokens,vector<string> input) {
-    check_for_duplicates(tokens,input);
-    int attribute_index = 0;
-    for (int i=0;i<(int)tokens.size();i++){
-        bool was_deleted = false;
+    check_for_duplicates_in_query(tokens,input);
+    vector <bool> removed_indexes;// set removed to true
+    for (int i=0;i<(int)tokens.size();i++){ //interpret query first!!!
         if (tokens.at(i) != "ID") {
-            attributes.erase(attributes.begin()+attribute_index);
-            for (int j=0;j<(int)tuples_list.size();j++){
-                tuples_list.at(j).remove_value(attribute_index);
-            }
-            was_deleted = true;
+            removed_indexes.push_back(true);
         }else{
             int curr_id_i = return_var_name_index(input.at(i)); //returns index of var in var_instance_list
-            if (var_instance_list.at(curr_id_i).get_size()>1) {// if variables repeat in the query
-                if (i!= stoi(var_instance_list.at(curr_id_i).get_value(0))){// if the current index of i is not equal to
-                    attributes.erase(attributes.begin()+attribute_index);//the index of where the first instance of that
+            if ((var_instance_list.at(curr_id_i).get_size()>1)&&(i!=stoi(var_instance_list.at(curr_id_i).get_value(0)))){
+                // if its a repeating query att, but its it's first instance ...
+                removed_indexes.push_back(true);
+            } else
+                removed_indexes.push_back(false);
+        }
+    }
+    vector <bool> rm_i_copy = removed_indexes;
+    for(int k=0;k<rm_i_copy.size();k++){
+        if (rm_i_copy.at(k)) {
+            attributes.erase(attributes.begin() + k);
+            rm_i_copy.erase(rm_i_copy.begin()+k);// so it matches
+            k--;
+        }
+    }
 
-                    for (int j=0;j<(int)tuples_list.size();j++){              //variable appeared, delete the column.
-                        tuples_list.at(j).remove_value(attribute_index);
-                    }
-
-                    was_deleted = true;
-                }
-
+    Relation temp_relation("t");    //creates a temp relation
+    temp_relation.setAttribute_as_vector(attributes);
+    for (int j=0;j<(int)tuples_list.size();j++){//for each tuple
+        vector <bool> rm_i_copy2 = removed_indexes;
+        for(int k=0;k<rm_i_copy2.size();k++){
+            if (rm_i_copy2.at(k)) {
+                tuples_list.at(j).remove_value(k);
+                rm_i_copy2.erase(rm_i_copy2.begin()+k);// so it matches
+                k--;
             }
         }
-        if (!was_deleted)//in the case a row was deleted, it does not count up through the columns.
-            attribute_index++;
+        temp_relation.setTuple(tuples_list.at(j));  //sets new tuples in temp relation
     }
-
-    vector <Tuple> temp_tuples = tuples_list;
     tuples_list.clear();
-    for (int k=0;k<(int)temp_tuples.size();k++){
-        setTuple(temp_tuples.at(k));
-    }
+    tuples_list = temp_relation.tuples_list;    //copies temp relation tuples into tuples of this relation
 }
 
 void Relation::project_for_lab(vector <string> tokens,vector<string> input) {    // projects for lab, so that if
@@ -283,12 +301,13 @@ void Relation::re_sortAttributes(vector<string> new_order) {
     }
 }
 
-void Relation::rel_join(Relation rel) {
+bool Relation::rel_join(Relation rel) {
     vector<string> new_attributes;
     vector<string> matched_attributes;
     vector<int> match_att_index;
     vector<int> other_indexes;
-    if (formNewAttributes(new_attributes,matched_attributes,match_att_index,other_indexes, attributes, rel.getAttributes_vector())) {// if some attributes match,
+    bool formed_att = formNewAttributes(new_attributes,matched_attributes,match_att_index,other_indexes, attributes, rel.getAttributes_vector());
+    if (formed_att) {// if some attributes match,
         vector<Tuple> saved_list = tuples_list;
         tuples_list.clear();
         for (int i=0;i<(int)saved_list.size();i++){ //checks rows at this relation attribute...
@@ -316,7 +335,10 @@ void Relation::rel_join(Relation rel) {
             }
         }
         attributes=new_attributes;
+    }else{
+        //cout<<"-------------------------------------------JOIN HAS FAILED----------------------------------"<<endl;
     }
+    return formed_att;
 }
 
 Tuple Relation::create_row_tuple(Tuple origTpl, Tuple otherTpl, vector<int> other_indexes) {
@@ -330,7 +352,7 @@ Tuple Relation::create_row_tuple(Tuple origTpl, Tuple otherTpl, vector<int> othe
     return tpl;
 }
 
-void Relation::check_for_duplicates(vector <string> tokens,vector<string> input) {
+void Relation::check_for_duplicates_in_query(vector <string> tokens,vector<string> input) {//duplicates in the query
     var_instance_list.clear();
     for (int i=0; i<(int)input.size(); i++) {
         if (tokens.at(i) == "ID"){  // only with id's
@@ -356,7 +378,7 @@ void Relation::check_for_duplicates(vector <string> tokens,vector<string> input)
     }
 
     //printing var_instance_list, will erase eventually
-    /*cout<<"CHECKING DUPLS"<<endl;
+    /*cout<<"CHECKING QUERY DUPLS"<<endl;
     for (int k=0; k<var_instance_list.size(); k++) {
         cout<<" "<<var_instance_list.at(k).get_var_name()<<": "<<var_instance_list.at(k).toStringTuple()<<endl;
     }

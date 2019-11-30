@@ -24,11 +24,14 @@ public:
     void setName(string);
     string toStringTuples();
     string toStringNewTuples();
+    int getNumberOfNewTuples();
     string toStringAttributeList();
     void setAttribute(string);   //sets Attribute ^
     string getAttribute(int);   //gets Attribute from attributes ^
+    void setAttribute_as_vector(vector<string>);
     vector<string> getAttributes_vector();
     int setTuple(Tuple);    //adds Tuple ^s
+    void removeTuple(int);
     Tuple getTuple(int);    //gets Tuple from tuples_list
     void clearTuples();
 
@@ -40,9 +43,9 @@ public:
     int rel_union(Relation);
     void re_sortAttributes(vector<string>);
 
-    void rel_join(Relation);
+    bool rel_join(Relation);
 
-    void check_for_duplicates(vector<string>,vector<string>);
+    void check_for_duplicates_in_query(vector<string>,vector<string>);
 
     int return_var_name_index(string);
 
@@ -53,6 +56,7 @@ private:
     vector <Tuple> var_instance_list; //will store list of tuples, in each 'tuple' it will state the index, or indexes of that var
     vector <int> union_n_inserted_tuples_indexes;
     //from query
+    bool does_match_tuples(Tuple);
     int returnRowToInsert(Tuple);//cur row, curr col, tuple in contention
     bool attributesMatch(vector<string>);
     bool all_attributesDiffer(vector<string>);

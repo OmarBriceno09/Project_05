@@ -129,37 +129,50 @@ int DatalogProgram::evaluate_all_rules() {
     while(changed){
         iter++;
         evaluations_changed.clear();
+        cout<<"Current iteration---------------------------------------> "<<iter<<endl;
         for(int i=0;i<(int)rule_list.size();i++){
             bool temp = evaluate_rule(rule_list.at(i));
             evaluations_changed.push_back(temp);// each rule is evaluated, and its result
-        }                                                                     //is pushed back to the vector
+        }
+        /*cout<<"changed[len "<<evaluations_changed.size()<<"] --------------------------------------------:";
+        for(int j=0;j<evaluations_changed.size();j++)
+            cout<<" "<<evaluations_changed.at(j)<<",";
+        cout<<endl;*/
         if(all_of(evaluations_changed.begin(), evaluations_changed.end(), [](bool v) { return !v; }))
-            changed = false;
+            changed = false;//return if all evals return a flase change.
     }
     return iter;
 }
 
 
 bool DatalogProgram::evaluate_rule(Rule& rule) {
+    cout<<" In Rule: "<<rule.out_rule()<<endl;
     bool changed_database = false; //false is database is not changed, if all rules eval output false, STOP EVAL
     int main_rel_indx = return_matching_relation_index(rule.main_relation_name);
     vector<string> saved_rule_rel_att = relation_list.at(main_rel_indx).getAttributes_vector();
     vector<string> rule_rel_att_tkns = rule.main_changed_att_tkns;
     relation_list.at(main_rel_indx).rename(rule_rel_att_tkns,rule.main_changed_attributes);//changes attributes to vars
     int rel_1_indx = return_matching_relation_index(rule.relations_names.at(0));
+    cout<<"     CREATING: relation_copy1"<<endl;
     Relation relation_copy1 = relation_list.at(rel_1_indx);//-------------CURRENT RELATION COPY
     vector<string> rel_c1_tkns = rule.resp_rel_att_tkns.at(0);
+    cout<<"     evaluating rel_copy1's predicates..."<<endl;
     evaluate_predicates(rel_c1_tkns,rule.resp_rel_attributes.at(0),relation_copy1);
+    cout<<"         predicates evaluated."<<endl;
+
+    cout<<"     JOINING---"<<endl;
+    bool join_successful = true;
     for(int i=0;i<(int)rule.relations_names.size();i++){
         rel_1_indx = return_matching_relation_index(rule.relations_names.at(i));
-        if(i>0){
+        if(i>0 && join_successful){
             Relation relation_copy2 = relation_list.at(rel_1_indx);//-------------IMPORTANT
             vector<string> rel_c2_tkns = rule.resp_rel_att_tkns.at(i);
             evaluate_predicates(rel_c2_tkns,rule.resp_rel_attributes.at(i),relation_copy2);
-            relation_copy1.rel_join(relation_copy2);
+            join_successful = relation_copy1.rel_join(relation_copy2);
         }
     }
-    vector<string> tkns_for_project;
+    cout<<"         Join Successful?: "<<join_successful<<endl;
+    vector<string> tkns_for_project;    //to project the chosen rows of each relation
     for(int i=0;i<(int)relation_copy1.getAttributes_vector().size();i++){
         string id_pr = "STRING";
         for(int j=0;j<(int)rule.main_changed_attributes.size();j++){
@@ -169,13 +182,29 @@ bool DatalogProgram::evaluate_rule(Rule& rule) {
         }
         tkns_for_project.push_back(id_pr);
     }
+    cout<<"     selected its rows to project?..."<<endl;
+    //cout<<"     "<<relation_copy1.toStringAttributeList()<<endl;
+    //cout<<relation_copy1.toStringTuples()<<endl;
     relation_copy1.project(tkns_for_project,relation_copy1.getAttributes_vector());//risky might just use eval predicates
+    cout<<"         projection done..."<<endl;
+    //cout<<"         "<<relation_copy1.toStringAttributeList()<<endl;
     //bool new_tuples = false;
-    if(relation_list.at(main_rel_indx).rel_union(relation_copy1)>0)
-        changed_database = true;
-    relation_copy1.rename(rule_rel_att_tkns, saved_rule_rel_att);
+    if(join_successful) {
+        cout<<"     UNION-ing---"<<endl;
+        if (relation_list.at(main_rel_indx).rel_union(relation_copy1) > 0) {
+            cout<<"         Union SUCCESSFUL!"<<endl;
+            changed_database = true;
+        } else{
+            cout<<"         Union UNSUCCESSFUL"<<endl;
+        }
+    }
+    //relation_copy1.rename(rule_rel_att_tkns, saved_rule_rel_att);
+    cout<<"     renaming rel"<<endl;
     relation_list.at(main_rel_indx).rename(rule_rel_att_tkns, saved_rule_rel_att);
+    cout<<"         done renaming rel"<<endl;
     project_4_output+= rule.out_rule()+"\n";
+    //if (join_successful)// if join is successful, print out
+    cout<<"----# of new tuples: "<<relation_list.at(main_rel_indx).getNumberOfNewTuples()<<endl;
     project_4_output+=relation_list.at(main_rel_indx).toStringNewTuples();//.toStringNewTuples();
     return changed_database;
 }

@@ -19,11 +19,11 @@ void idkwhatcomesnext();
 
 int main(int argc, char **argv) {
     cout<<"--------------PROJECT 04 - JOIN TESTER---------------------------"<<endl;
-    alpha_test();
-    beta_test();
-    gamma_test();
-    delta_test();
-    epsilon_test();
+    //alpha_test();
+    //beta_test();
+    //gamma_test();
+    //delta_test();
+    //epsilon_test();
     idkwhatcomesnext();
 }
 
