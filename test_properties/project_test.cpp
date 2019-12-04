@@ -22,7 +22,7 @@ int main(int argc, char **argv) {
     cout<<"--------------UNIT TEST 1 - PROJECT OPERATOR---------------------------"<<endl;
     gamma();
     beta();
-    //alpha();
+    alpha();
 }
 
 void gamma(){
@@ -31,7 +31,7 @@ void gamma(){
     example1.setAttribute("'fish'");
     example1.setAttribute("'bird'");
     example1.setAttribute("'bunny'");
-    int r1[5][4] = {{3,4,2,4},{6,4,9,2},{4,3,2,7},{1,5,2,4},{1,5,8,3}};
+    int r1[6][4] = {{3,4,2,4},{6,4,9,2},{4,3,2,7},{1,5,2,4},{1,5,8,3},{3,4,2,4}};
     Tuple tpl1;
     add_values_to_tuple(tpl1,r1[0],4);
     example1.setTuple(tpl1);
@@ -47,6 +47,9 @@ void gamma(){
     Tuple tpl5;
     add_values_to_tuple(tpl5,r1[4],4);
     example1.setTuple(tpl5);
+    Tuple tpl6;
+    add_values_to_tuple(tpl6,r1[5],4);
+    example1.setTuple(tpl6);
     cout<<example1.getName()<<": "<<endl;
     cout<<example1.toStringTuples()<<endl;
 

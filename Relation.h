@@ -31,7 +31,7 @@ public:
     void setAttribute_as_vector(vector<string>);
     vector<string> getAttributes_vector();
     int setTuple(Tuple);    //adds Tuple ^s
-    void removeTuple(int);
+    //void removeTuple(int);
     Tuple getTuple(int);    //gets Tuple from tuples_list
     void clearTuples();
 
@@ -41,9 +41,9 @@ public:
     void project_for_lab(vector<string>,vector<string>);
 
     int rel_union(Relation);
-    void re_sortAttributes(vector<string>);
+    //void re_sortAttributes(vector<string>);
 
-    bool rel_join(Relation);
+    void rel_join(Relation);
 
     void check_for_duplicates_in_query(vector<string>,vector<string>);
 
@@ -54,15 +54,17 @@ private:
     vector <string> attributes;
     vector <Tuple> tuples_list;
     vector <Tuple> var_instance_list; //will store list of tuples, in each 'tuple' it will state the index, or indexes of that var
-    vector <int> union_n_inserted_tuples_indexes;
+    //vector <int> union_n_inserted_tuples_indexes;
+    vector <Tuple*> new_inserted_tuples;
     //from query
-    bool does_match_tuples(Tuple);
+    //bool does_match_tuples(Tuple);
     int returnRowToInsert(Tuple);//cur row, curr col, tuple in contention
     bool attributesMatch(vector<string>);
     bool all_attributesDiffer(vector<string>);
     bool foundIndex(vector<int>&,int);
+    bool foundTuple(Tuple);
     Tuple create_row_tuple(Tuple,Tuple,vector<int>);
-    bool formNewAttributes(vector<string>&,vector<string>&,vector<int>&,vector<int>&,vector<string>,vector<string>);
+    void formNewAttributes(vector<Tuple>&,vector<string>&,vector<int>&,vector<string>,vector<string>);
 };
 
 #endif //PROJECT_04_RELATION_H

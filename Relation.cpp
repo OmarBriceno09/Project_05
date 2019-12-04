@@ -9,7 +9,11 @@ Relation::Relation(string nm) {
 }
 
 Relation::~Relation() {
-
+    for (int x=0;x<(int)new_inserted_tuples.size();x++){
+        Tuple* tpl = new_inserted_tuples.at(x);
+        tpl = nullptr;
+        delete tpl;
+    }
 }
 
 int Relation::getCols() {
@@ -45,7 +49,7 @@ string Relation::toStringTuples() {
 string Relation::toStringNewTuples() {
     string the_output="";
     for (int i=0; i<(int)tuples_list.size(); i++){
-        if(foundIndex(union_n_inserted_tuples_indexes,i)) {
+        if(foundTuple(tuples_list.at(i))) {
             the_output += "  ";
             for (int j = 0; j < (int) attributes.size(); j++) {
                 the_output += attributes.at(j) + "=" + tuples_list.at(i).get_value(j);
@@ -68,7 +72,7 @@ string Relation::toStringNewTuples() {
 }
 
 int Relation::getNumberOfNewTuples(){
-    return union_n_inserted_tuples_indexes.size();
+    return new_inserted_tuples.size();
 }
 
 string Relation::toStringAttributeList() {
@@ -99,27 +103,27 @@ vector<string> Relation::getAttributes_vector() {
 
 int Relation::setTuple(Tuple tpl) { // make sure tuple is added in alphabetical order, based on 1st element of tuple
     int insert_index=-1;//compares current tuple with all others and checks for match
-    bool does_it_match = does_match_tuples(tpl);//compares current tuple with all others and checks for match
-    if (!does_it_match) {
-        insert_index = returnRowToInsert(tpl);  //row of insertion is determined here, ordered alphabetically
+    insert_index = returnRowToInsert(tpl);  //row of insertion is determined here, ordered alphabetically
+    if (insert_index!=-1)
         tuples_list.insert(tuples_list.begin() + insert_index, tpl);
-    }
     return insert_index;
 }
 
-bool Relation::does_match_tuples(Tuple tpl) {// compare all but indx
+/*bool Relation::does_match_tuples(Tuple tpl) {// compare all but indx
     bool does_it_match = false;
-    for (int i=0; i<getRows(); i++){    //compares current tuple with all others and checks for match
+    int i=0;
+    while(!does_it_match&&i<getRows()){
         if (tpl.getValuesList() == getTuple(i).getValuesList()) {// compare all but index
             does_it_match = true;
         }
+        i++;
     }
     return does_it_match;
-}
+}*/
 
-void Relation::removeTuple(int i) {
+/*void Relation::removeTuple(int i) {
     tuples_list.erase(tuples_list.begin()+i);
-}
+}*/
 
 void Relation::clearTuples() {
     tuples_list.clear();
@@ -133,25 +137,32 @@ int Relation::returnRowToInsert(Tuple tpl) {
     int insert_index = 0;
     int curr_r = 0;
     bool stop = false;
-    while(curr_r<=getRows()-1){
-        int curr_c = 0;
-        //BE SURE TO SET THE ATTRIBUTES BEFORE PLACING TUPLES
-        while (curr_c<=getCols()-1){
-            if ((tpl.get_value(curr_c).compare(tuples_list.at(curr_r).get_value(curr_c))) == 0) {   //if elements of tuples are ==
-                curr_c++;   //move ahead 1 col
-            } else if ((tpl.get_value(curr_c).compare(tuples_list.at(curr_r).get_value(curr_c))) > 0) { //if element is greater move to next row...
-                curr_r++;   //next row
-                curr_c = getCols(); //restart cols
-            } else{// if dif < 0, stop all!!!!
-                stop = true;
-                insert_index = curr_r;
-                curr_r = getRows();
-                curr_c = getCols();
+    while(curr_r<=getRows()-1) {
+        if (tpl.getValuesList() == getTuple(curr_r).getValuesList()) {// compare all but index
+            stop = true;
+            insert_index = -1;// loop ends if tuples are equal and returns index of -1
+            curr_r = getRows();
+        } else {
+            int curr_c = 0;
+            //BE SURE TO SET THE ATTRIBUTES BEFORE PLACING TUPLES
+            while (curr_c <= getCols() - 1) {
+                int eq_val = tpl.get_value(curr_c).compare(tuples_list.at(curr_r).get_value(curr_c));
+                if (eq_val == 0) {   //if elements of tuples are ==
+                    curr_c++;   //move ahead 1 col
+                } else if (eq_val > 0) { //if element is greater move to next row...
+                    curr_r++;   //next row
+                    curr_c = getCols(); //restart cols
+                } else {// if dif < 0, stop all!!!!
+                    stop = true;
+                    insert_index = curr_r;
+                    curr_r = getRows();
+                    curr_c = getCols();
+                }
+            }
+            if (!stop) {
+                insert_index = tuples_list.size();
             }
         }
-    }
-    if (!stop){
-        insert_index = tuples_list.size();
     }
     return insert_index;
 }
@@ -206,13 +217,6 @@ void Relation::select(vector <string> tokens,vector<string> input) {
             }
         }
     }
-
-
-    vector <Tuple> temp_tuples = tuples_list;
-    tuples_list.clear();
-    for (int k=0;k<(int)temp_tuples.size();k++){
-        setTuple(temp_tuples.at(k));
-    }
 }
 
 void Relation::project(vector <string> tokens,vector<string> input) {
@@ -231,7 +235,7 @@ void Relation::project(vector <string> tokens,vector<string> input) {
         }
     }
     vector <bool> rm_i_copy = removed_indexes;
-    for(int k=0;k<rm_i_copy.size();k++){
+    for(int k=0;k<(int)rm_i_copy.size();k++){
         if (rm_i_copy.at(k)) {
             attributes.erase(attributes.begin() + k);
             rm_i_copy.erase(rm_i_copy.begin()+k);// so it matches
@@ -243,7 +247,7 @@ void Relation::project(vector <string> tokens,vector<string> input) {
     temp_relation.setAttribute_as_vector(attributes);
     for (int j=0;j<(int)tuples_list.size();j++){//for each tuple
         vector <bool> rm_i_copy2 = removed_indexes;
-        for(int k=0;k<rm_i_copy2.size();k++){
+        for(int k=0;k<(int)rm_i_copy2.size();k++){
             if (rm_i_copy2.at(k)) {
                 tuples_list.at(j).remove_value(k);
                 rm_i_copy2.erase(rm_i_copy2.begin()+k);// so it matches
@@ -269,19 +273,38 @@ void Relation::project_for_lab(vector <string> tokens,vector<string> input) {   
 }
 
 int Relation::rel_union(Relation rel) {
-    union_n_inserted_tuples_indexes.clear();
+   // cout<<"----in UNION of relation class, new tuples ----------"<<endl;
+    for (int x=0;x<(int)new_inserted_tuples.size();x++){
+        Tuple* tpl = new_inserted_tuples.at(x);
+        tpl = nullptr;
+        delete tpl;
+    }
+    new_inserted_tuples.clear();
     if (attributesMatch(rel.getAttributes_vector())){
-        rel.re_sortAttributes(attributes);
-        for(int i=0;i<(int)rel.tuples_list.size();i++){
-            int new_index =setTuple(rel.tuples_list.at(i));
-            if (new_index>-1)   //adds i to list if does not match already placed tuples
-                union_n_inserted_tuples_indexes.push_back(new_index);
+        vector<Tuple> saved_list = rel.tuples_list;// saves other relation list
+        for (int i=0;i<(int)saved_list.size();i++){
+            Tuple organizedTpl;
+            for (int j=0;j<(int)attributes.size();j++){
+                for(int k=0;k<(int)rel.getAttributes_vector().size();k++){
+                    if (attributes.at(j)==rel.getAttributes_vector().at(k)) {
+                        organizedTpl.add_value(saved_list.at(i).get_value(k));
+                    }
+                }
+            }
+            int new_index = setTuple(organizedTpl);
+            if (new_index>-1) {  //adds i to list if does not match already placed tuples
+                Tuple *tpl = new Tuple;
+                *tpl = organizedTpl;
+                new_inserted_tuples.push_back(tpl);
+                tpl= nullptr;
+                delete tpl;
+            }
         }
     }
-    return union_n_inserted_tuples_indexes.size();
+    return new_inserted_tuples.size();
 }
 
-void Relation::re_sortAttributes(vector<string> new_order) {
+/*void Relation::re_sortAttributes(vector<string> new_order) {
     if(attributesMatch(new_order)){
         vector<Tuple> saved_list = tuples_list;
         tuples_list.clear();
@@ -299,57 +322,52 @@ void Relation::re_sortAttributes(vector<string> new_order) {
         }
         attributes = new_order;
     }
-}
+}*/
 
-bool Relation::rel_join(Relation rel) {
-    vector<string> new_attributes;
-    vector<string> matched_attributes;
-    vector<int> match_att_index;
-    vector<int> other_indexes;
-    bool formed_att = formNewAttributes(new_attributes,matched_attributes,match_att_index,other_indexes, attributes, rel.getAttributes_vector());
-    if (formed_att) {// if some attributes match,
-        vector<Tuple> saved_list = tuples_list;
-        tuples_list.clear();
-        for (int i=0;i<(int)saved_list.size();i++){ //checks rows at this relation attribute...
-            for(int h=0;h<(int)rel.tuples_list.size();h++){
-                bool comp_match = true;
-                int j=0;
-                while((j<(int)attributes.size())&&comp_match){
-                    int k=0;
-                    while((k<(int)matched_attributes.size())&&comp_match){
-                        if (attributes.at(j) == matched_attributes.at(k)) {
-                            if (saved_list.at(i).get_value(j) != rel.tuples_list.at(h).get_value(match_att_index.at(k))) {
-                                comp_match=false;
-                            }
-                        }
-                        k++;
-                    }
-                    j++;
+void Relation::rel_join(Relation rel) {//----------------------------------CHECK---------------------------------------
+    vector<string> new_attributes;  // the new set of attributes this relation will have
+    vector<string> old_attributes;  //old attributes will be saved for future comparisons
+    vector<Tuple> matching_pairs;
+    vector<int> other_indexes;  //indexes of the different attributes
+    formNewAttributes(matching_pairs, new_attributes,other_indexes, attributes, rel.getAttributes_vector());
+    /*cout<<"------------------------matching pairs len: "<<matching_pairs.size()<<endl;
+    for(int h=0;h<(int)matching_pairs.size();h++){
+        cout<<"  "<<matching_pairs.at(h).get_value(0)<<" vs. "<<matching_pairs.at(h).get_value(1)<<endl;
+    }*/
+    vector<Tuple> saved_list = tuples_list;
+    tuples_list.clear();
+    old_attributes = attributes;
+    attributes = new_attributes; // so that program doesn't break in setTuples part.
+    for (int i=0;i<(int)saved_list.size();i++){ //for each tuple t1 in r1
+        for(int h=0;h<(int)rel.tuples_list.size();h++){// for each  tuple t2 in r2
+            bool comp_match = true;
+            int v=0;
+            while((v<(int)matching_pairs.size())&&comp_match) {// loops through all pairs made
+                int j = stoi(matching_pairs.at(v).get_value(0));
+                int k = stoi(matching_pairs.at(v).get_value(1));
+                if (saved_list.at(i).get_value(j) != rel.tuples_list.at(h).get_value(k)) {
+                    comp_match = false;
                 }
-                if (comp_match) {
-                    Tuple tpl;
-                    tpl = create_row_tuple(saved_list.at(i),rel.tuples_list.at(h),other_indexes);
-                    tuples_list.push_back(tpl);
-                    //cout<<tpl.toStringTuple()<<endl;
-                }
+                v++;
+            }
+            if (comp_match) {//IF TUPLES MATCH THEY WILL BE JOINED
+                Tuple joined_tpl;
+                joined_tpl = create_row_tuple(saved_list.at(i),rel.tuples_list.at(h),other_indexes);
+                setTuple(joined_tpl);
             }
         }
-        attributes=new_attributes;
-    }else{
-        //cout<<"-------------------------------------------JOIN HAS FAILED----------------------------------"<<endl;
     }
-    return formed_att;
 }
 
 Tuple Relation::create_row_tuple(Tuple origTpl, Tuple otherTpl, vector<int> other_indexes) {
-    Tuple tpl;
-    for (int i=0; i<(int)origTpl.get_size();i++){
-        tpl.add_value(origTpl.get_value(i));
+    Tuple joined_tpl;
+    for (int i=0; i<(int)origTpl.get_size();i++){//adds all values of t1 in rel1
+        joined_tpl.add_value(origTpl.get_value(i));
     }
-    for(int j=0;j<(int)other_indexes.size();j++){
-        tpl.add_value(otherTpl.get_value(other_indexes.at(j)));
+    for(int j=0;j<(int)other_indexes.size();j++){//adds all but the values that match in t1, form t2 in rel2
+        joined_tpl.add_value(otherTpl.get_value(other_indexes.at(j)));
     }
-    return tpl;
+    return joined_tpl;
 }
 
 void Relation::check_for_duplicates_in_query(vector <string> tokens,vector<string> input) {//duplicates in the query
@@ -420,38 +438,38 @@ bool Relation::all_attributesDiffer(vector<string> att) {
     return none_are_equal;
 }
 
-bool Relation::formNewAttributes(vector<string> &changed_att,vector<string> &matched_att,
-        vector<int>& match_att_index,vector<int>& other_indexes, vector<string> att1,
-        vector<string> att2) {
-    bool can_join=true;
-    if (!attributesMatch(att2)/*&&!all_attributesDiffer(att2)*/) {
-        for (int i = 0; i < (int)att1.size(); i++) {
-            for (int j = 0; j < (int)att2.size(); j++){
-                if (att1.at(i) == att2.at(j)) {
-                    match_att_index.push_back(j);//pushes back index of matching att
-                }
-            }
-        }
-        for(int q=0;q<(int)att2.size();q++){
-            if(!foundIndex(match_att_index,q)){
-                other_indexes.push_back(q);
-            }
-        }
-        //other_indexes
-        changed_att.reserve(att1.size() + att2.size());
-        changed_att.insert(changed_att.end(), att1.begin(), att1.end());
-        changed_att.insert(changed_att.end(), att2.begin(), att2.end());
-        for (int i = 0; i < (int)changed_att.size(); i++) {
-            for (int j = i + 1; j < (int)changed_att.size(); j++)
-                if (changed_att.at(i) == changed_att.at(j)) {
-                    matched_att.push_back(changed_att.at(j));
-                    changed_att.erase(changed_att.begin() + j);
+void Relation::formNewAttributes(vector<Tuple> &matching_pairs, vector<string> &changed_att, vector<int>& other_indexes,
+        vector<string> att1, vector<string> att2) {//CHECKS IF ATTRIBUTES ARE COMPARABLE OR NOT ...
+    //bool can_join=true;
+    vector<int> match_att_index;
+    //if (!attributesMatch(att2)/*&&!all_attributesDiffer(att2)*/) {
+    for (int i = 0; i < (int)att1.size(); i++) {
+        for (int j = 0; j < (int)att2.size(); j++){
+            if (att1.at(i) == att2.at(j)) {
+                Tuple match_index;
+                match_index.add_value(to_string(i));//from rel1
+                match_index.add_value(to_string(j));//from rel2
+                matching_pairs.push_back(match_index);
+                match_att_index.push_back(j);//pushes back index of matching att
                 }
         }
-    } else
-        can_join = false;
-    return can_join;
-
+    }
+    for(int q=0;q<(int)att2.size();q++){
+        if(!foundIndex(match_att_index,q)){
+            other_indexes.push_back(q);
+        }
+    }
+    //other_indexes
+    changed_att.reserve(att1.size() + att2.size());//creating the new attributes
+    changed_att.insert(changed_att.end(), att1.begin(), att1.end());
+    changed_att.insert(changed_att.end(), att2.begin(), att2.end());
+    for (int i = 0; i < (int)changed_att.size(); i++) {
+        for (int j = i + 1; j < (int)changed_att.size(); j++)
+            if (changed_att.at(i) == changed_att.at(j)) {
+                //matched_att.push_back(changed_att.at(j));
+                changed_att.erase(changed_att.begin() + j); // these are the new attributes in the relation
+            }
+    }
 }
 
 bool Relation::foundIndex(vector<int> & vect, int val) {
@@ -459,6 +477,18 @@ bool Relation::foundIndex(vector<int> & vect, int val) {
         if (vect.at(i)==val){
             return true;
         }
+    }
+    return false;
+}
+
+bool Relation::foundTuple(Tuple tpl) {
+    //cout<<"kek start: "<<new_inserted_tuples.size()<<endl;
+    for (int x=0;x<(int)new_inserted_tuples.size();x++){
+        Tuple tpl_n;
+        tpl_n = *new_inserted_tuples.at(x);
+        if (tpl.getValuesList() == tpl_n.getValuesList())
+            return true;
+        //cout<<tpl.toStringTuple()<<endl;
     }
     return false;
 }

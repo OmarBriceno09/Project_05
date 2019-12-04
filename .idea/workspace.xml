@@ -17,11 +17,12 @@
       <change beforePath="$PROJECT_DIR$/Relation.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Relation.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Relation.h" beforeDir="false" afterPath="$PROJECT_DIR$/Relation.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/actual.txt" beforeDir="false" afterPath="$PROJECT_DIR$/actual.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lab4" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/lab4.exe" beforeDir="false" afterPath="$PROJECT_DIR$/lab4.exe" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lab4_project.exe" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/project4_tests/in88.txt" beforeDir="false" afterPath="$PROJECT_DIR$/project4_tests/in88.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/project4_tests/union_test.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/project_test.cpp" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/test_properties/join_test.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/test_properties/join_test.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test_properties/project_test.cpp" beforeDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -101,7 +102,9 @@
       <workItem from="1574220804639" duration="1798000" />
       <workItem from="1574293179923" duration="20098000" />
       <workItem from="1574353714395" duration="21511000" />
-      <workItem from="1574382708878" duration="23702000" />
+      <workItem from="1574382708878" duration="25450000" />
+      <workItem from="1575087555058" duration="13000" />
+      <workItem from="1575322106606" duration="20860000" />
     </task>
     <servers />
   </component>
