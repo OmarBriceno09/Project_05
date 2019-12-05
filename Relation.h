@@ -7,6 +7,7 @@
 #include <fstream>
 #include <iostream>//for output ---- delete later
 #include <vector>
+#include <set>
 #include <algorithm>
 #include "Tuple.h"
 
@@ -24,47 +25,47 @@ public:
     void setName(string);
     string toStringTuples();
     string toStringNewTuples();
-    int getNumberOfNewTuples();
+    //int getNumberOfNewTuples();
     string toStringAttributeList();
     void setAttribute(string);   //sets Attribute ^
     string getAttribute(int);   //gets Attribute from attributes ^
-    void setAttribute_as_vector(vector<string>);
-    vector<string> getAttributes_vector();
-    int setTuple(Tuple);    //adds Tuple ^s
+    void setAttribute_as_vector(vector<string>&);
+    vector<string>& getAttributes_vector();
+    bool setTuple(Tuple&);    //adds Tuple ^s
     //void removeTuple(int);
-    Tuple getTuple(int);    //gets Tuple from tuples_list
+    //Tuple getTuple(int);    //gets Tuple from tuples_list
     void clearTuples();
 
-    void rename(vector<string>,vector<string>);
-    void select(vector<string>,vector<string>);
-    void project(vector<string>,vector<string>);
-    void project_for_lab(vector<string>,vector<string>);
+    void rename(vector<string>&,vector<string>&);
+    void select(vector<string>&,vector<string>&);
+    void project(vector<string>&,vector<string>&);
+    void project_for_lab(vector<string>&,vector<string>&);
 
-    int rel_union(Relation);
-    //void re_sortAttributes(vector<string>);
+    int rel_union(Relation&);
 
-    void rel_join(Relation);
+    void rel_join(Relation&);
 
-    void check_for_duplicates_in_query(vector<string>,vector<string>);
+    void check_for_duplicates_in_query(vector<string>&,vector<string>&);
 
-    int return_var_name_index(string);
+    int return_var_name_index(string&);
 
 private:
     string name = "";
     vector <string> attributes;
-    vector <Tuple> tuples_list;
+    //vector <Tuple> tuples_list;
+    set <Tuple> tpl_list;
     vector <Tuple> var_instance_list; //will store list of tuples, in each 'tuple' it will state the index, or indexes of that var
+    //JUST USE SETS
     //vector <int> union_n_inserted_tuples_indexes;
-    vector <Tuple*> new_inserted_tuples;
+    set <Tuple*> new_inserted_tuples;//JUST USE SETS
     //from query
     //bool does_match_tuples(Tuple);
-    int returnRowToInsert(Tuple);//cur row, curr col, tuple in contention
-    bool attributesMatch(vector<string>);
-    bool all_attributesDiffer(vector<string>);
+    bool attributesMatch(vector<string>&);
+    //bool all_attributesDiffer(vector<string>&);
     bool foundIndex(vector<int>&,int);
-    bool foundTuple(Tuple);
-    Tuple create_row_tuple(Tuple,Tuple,vector<int>);
-    void formNewAttributes(vector<Tuple>&,vector<string>&,vector<int>&,vector<string>,vector<string>);
+    bool foundTuple(Tuple&);
+    void create_row_tuple(Tuple&,Tuple&,Tuple&,vector<int>&);
+    void formNewAttributes(vector<Tuple>&,vector<string>&,vector<int>&,vector<string>&,vector<string>&);
 };
 
 #endif //PROJECT_04_RELATION_H

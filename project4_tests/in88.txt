@@ -1,7 +1,7 @@
 
 
-# long-running input for CS 236 Lab 4
-# takes about 1 minute without valgrind
+# Copyright BYU 2019
+# Do not share and do not post publicly.
 
 
 Schemes:
@@ -14,6 +14,11 @@ A('a','b','c','d','e').
 A('f','g','h','i','j').
 
 
+#|remove to create 11E5 facts
+A('a','b','c','f','g').
+A('a','b','c','h','i').
+A('a','b','c','j','k').
+|#
 Rules:
 A(a,b,c,d,e) :- A(e,d,c,b,a).
 A(a,b,c,f,g) :- A(a,b,c,d,e),A(e,d,c,f,g).

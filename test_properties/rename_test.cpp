@@ -101,7 +101,7 @@ void gamma(){
 
 void add_values_to_tuple(Tuple& tpl,int* array, int len){
     for(int i=0;i<len;i++){
-        tpl.add_value(to_string(array[i]));
+        tpl.push_back(to_string(array[i]));
     }
 }
 

@@ -128,8 +128,8 @@ int DatalogProgram::evaluate_all_rules() {
     int iter=0;
     while(changed){
         iter++;
+        //evaluations_changed.empty();
         evaluations_changed.clear();
-        //cout<<"Current iteration---------------------------------------> "<<iter<<endl;
         for(int i=0;i<(int)rule_list.size();i++){
             bool temp = evaluate_rule(rule_list.at(i));
             evaluations_changed.push_back(temp);// each rule is evaluated, and its result
@@ -204,8 +204,10 @@ bool DatalogProgram::evaluate_rule(Rule& rule) {
     relation_list.at(main_rel_indx).rename(rule_rel_att_tkns, saved_rule_rel_att);
     project_4_output+= rule.out_rule()+"\n";
     //cout<<relation_list.at(main_rel_indx).toStringNewTuples()<<endl;
-    //cout<<"***********************************************"<<endl;
+    //cout<<"tostring new tuples"<<endl;
     project_4_output+=relation_list.at(main_rel_indx).toStringNewTuples();//.toStringNewTuples();
+    //cout<<"to string new tuples outputed..."<<endl;
+    //cout<<"***********************************************"<<endl;
     return changed_database;
 }
 
@@ -261,7 +263,7 @@ void DatalogProgram::fact(int &tk_num, vector<string> &token_type, vector<string
                 fact_flow+=token_input[tk_num];
                 domains.push_back(token_input[tk_num]);
                 Tuple n_tuple; // ----this is where you start adding vals to your tuples
-                n_tuple.add_value(token_input[tk_num]);
+                n_tuple.push_back(token_input[tk_num]);
                 tk_num++;
                 stringList(tk_num,token_type,token_input,token_linenum, n_tuple,fact_flow);
                 if(token_type[tk_num] == "RIGHT_PAREN"){
@@ -331,7 +333,7 @@ void DatalogProgram::stringList(int &tk_num, vector<string> &token_type, vector<
             if(token_type[tk_num] == "STRING") {//STRING
                 curr_out_flow+=token_input[tk_num];
                 domains.push_back(token_input[tk_num]);
-                n_tuple.add_value(token_input[tk_num]); // ADDING TO TUPPLE
+                n_tuple.push_back(token_input[tk_num]); // ADDING TO TUPPLE
                 tk_num++;
                 stringList(tk_num,token_type,token_input,token_linenum, n_tuple, curr_out_flow);
             }else{throw tk_num;}

@@ -20,9 +20,9 @@ int main(int argc, char **argv) {
     cout<<"--------------PROJECT 04 - UNION TESTER---------------------------"<<endl;
     alpha_test();
     beta_test();
-    gamma_test();
-    delta_test();
-    epsilon_test();
+    //gamma_test();
+    //delta_test();
+    //epsilon_test();
 }
 
 void alpha_test(){
@@ -61,6 +61,9 @@ void alpha_test(){
     cout<<"relation: "<<rel_E.getName()<<endl;
     cout<<"attributes: "<<rel_E.toStringAttributeList()<<endl;
     cout<<rel_E.toStringTuples()<<endl;
+    cout<<"-----------------TO STRING NEW TUPLES--------------------------"<<endl;
+    cout<<rel_E.toStringNewTuples()<<endl;
+    cout<<"----------------------------------------------------------------"<<endl;
 }
 
 void beta_test(){
@@ -108,6 +111,9 @@ void beta_test(){
     cout<<"relation: "<<rel_J.getName()<<endl;
     cout<<"attributes: "<<rel_J.toStringAttributeList()<<endl;
     cout<<rel_J.toStringTuples()<<endl;
+    cout<<"-----------------TO STRING NEW TUPLES--------------------------"<<endl;
+    cout<<rel_J.toStringNewTuples()<<endl;
+    cout<<"----------------------------------------------------------------"<<endl;
 }
 
 void gamma_test(){
@@ -230,6 +236,6 @@ void epsilon_test(){
 
 void add_values_to_tuple(Tuple& tpl,int* array, int len){
     for(int i=0;i<len;i++){
-        tpl.add_value(to_string(array[i]));
+        tpl.push_back(to_string(array[i]));
     }
 }

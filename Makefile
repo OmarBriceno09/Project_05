@@ -10,3 +10,5 @@ union:
 	g++ union_test.cpp Relation.cpp Tuple.cpp -o lab4_union
 join:
 	g++ join_test.cpp Relation.cpp Tuple.cpp -o lab4_join
+tuples:
+	g++ select_test.cpp Tuple.cpp -o tpl_test
