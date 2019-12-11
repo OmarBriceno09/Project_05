@@ -2,8 +2,8 @@
 // Created by OmarB on 11/16/2019.
 //
 
-#ifndef PROJECT_04_PARAMETER_H
-#define PROJECT_04_PARAMETER_H
+#ifndef PROJECT_05_PARAMETER_H
+#define PROJECT_05_PARAMETER_H
 #include <fstream>
 #include <vector>
 using namespace std;
@@ -36,4 +36,4 @@ private:
     bool does_token_match(string, const string[], int);
 };
 
-#endif //PROJECT_04_PARAMETER_H
+#endif //PROJECT_05_PARAMETER_H

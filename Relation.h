@@ -2,8 +2,8 @@
 // Created by OmarB on 11/16/2019.
 //
 
-#ifndef PROJECT_04_RELATION_H
-#define PROJECT_04_RELATION_H
+#ifndef PROJECT_05_RELATION_H
+#define PROJECT_05_RELATION_H
 #include <fstream>
 #include <iostream>//for output ---- delete later
 #include <vector>
@@ -68,4 +68,4 @@ private:
     void formNewAttributes(vector<Tuple>&,vector<string>&,vector<int>&,vector<string>&,vector<string>&);
 };
 
-#endif //PROJECT_04_RELATION_H
+#endif //PROJECT_05_RELATION_H

@@ -2,8 +2,8 @@
 // Created by OmarB on 11/16/2019.
 //
 
-#ifndef PROJECT_04_RULE_H
-#define PROJECT_04_RULE_H
+#ifndef PROJECT_05_RULE_H
+#define PROJECT_05_RULE_H
 #include <fstream>
 #include <vector>
 #include "Relation.h"
@@ -54,4 +54,4 @@ private:
                                   "MULTIPLY","ADD","FACTS","RULES","QUERIES","ID","STRING","EOF"};
 };
 
-#endif //PROJECT_04_RULE_H
+#endif //PROJECT_05_RULE_H

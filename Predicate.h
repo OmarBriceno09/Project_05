@@ -2,8 +2,8 @@
 // Created by OmarB on 11/16/2019.
 //
 
-#ifndef PROJECT_04_PREDICATE_H
-#define PROJECT_04_PREDICATE_H
+#ifndef PROJECT_05_PREDICATE_H
+#define PROJECT_05_PREDICATE_H
 #include <iostream>
 #include <fstream>
 #include <vector>
@@ -39,4 +39,4 @@ private:
                                      "MULTIPLY","ADD","QUERIES","ID","STRING","EOF"};
 };
 
-#endif //PROJECT_04_PREDICATE_H
+#endif //PROJECT_05_PREDICATE_H

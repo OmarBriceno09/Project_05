@@ -123,7 +123,7 @@ void DatalogProgram::ruleList(int &tk_num, vector<string> &token_type, vector<st
 }
 
 int DatalogProgram::evaluate_all_rules() {
-    bool changed=true;
+    /*bool changed=true;
     vector<bool> evaluations_changed; //<- if all evaluated rules are 0, then it changed becomes false;
     int iter=0;
     while(changed){
@@ -134,14 +134,18 @@ int DatalogProgram::evaluate_all_rules() {
             bool temp = evaluate_rule(rule_list.at(i));
             evaluations_changed.push_back(temp);// each rule is evaluated, and its result
         }
-        /*cout<<"changed[len "<<evaluations_changed.size()<<"] --------------------------------------------:";
-        for(int j=0;j<evaluations_changed.size();j++)
-            cout<<" "<<evaluations_changed.at(j)<<",";
-        cout<<endl;*/
         if(all_of(evaluations_changed.begin(), evaluations_changed.end(), [](bool v) { return !v; }))
             changed = false;//return if all evals return a flase change.
     }
-    return iter;
+    return iter;*/
+    Graph graph;
+    for(int i=0;i<(int)rule_list.size();i++){
+        graph.evaluate_Rule(rule_list.at(i));
+    }
+    graph.constructGraphs();
+    program_5_debug_output+=graph.toStringDependencyGraph();
+    program_5_debug_output+=graph.toStringReverseDependencyGraph();
+    return 1;
 }
 
 
@@ -383,6 +387,10 @@ string DatalogProgram::project_3_string() {
 
 string DatalogProgram::project_4_string() {
     return project_4_output;
+}
+
+string DatalogProgram::program_5_debug_string() {
+    return program_5_debug_output;
 }
 
 string DatalogProgram::query_toString(Relation & the_relation, string query_string, vector<string> tokens) {

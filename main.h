@@ -2,8 +2,8 @@
 // Created by OmarB on 11/16/2019.
 //
 
-#ifndef PROJECT_04_MAIN_H
-#define PROJECT_04_MAIN_H
+#ifndef PROJECT_05_MAIN_H
+#define PROJECT_05_MAIN_H
 
 #include <fstream>
 #include <iostream>
@@ -32,4 +32,4 @@ bool is_it_keyid(string);
 void tokenizing_state_machine(ifstream&,vector<string>&, vector<string>&, vector<int>&);
 void push_to_input_vectors(string, string, int, vector<string>&, vector<string>&, vector<int>&);
 
-#endif //PROJECT_04_MAIN_H
+#endif //PROJECT_05_MAIN_H

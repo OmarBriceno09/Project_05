@@ -2,14 +2,16 @@
 // Created by OmarB on 11/16/2019.
 //
 
-#ifndef PROJECT_04_DATALOGPROGRAM_H
-#define PROJECT_04_DATALOGPROGRAM_H
+#ifndef PROJECT_05_DATALOGPROGRAM_H
+#define PROJECT_05_DATALOGPROGRAM_H
 #include <vector>
 #include <bits/stdc++.h>
 #include "Rule.h"
 #include "Predicate.h"
 #include "Relation.h"
 #include "Tuple.h"
+#include "Node.h"
+#include "Graph.h"
 
 using namespace std;
 
@@ -21,6 +23,7 @@ public:
     string datalogProgram_string();
     string project_3_string();
     string project_4_string();
+    string program_5_debug_string();//-------------------------DEBUG
     vector<Relation> relation_list;
     vector<Rule> rule_list;
     //void dataLogProgram(vector<string>&, vector<string>&, vector<int>&);
@@ -37,6 +40,8 @@ private:
 
     string project_3_output = "";
     string project_4_output = "";
+
+    string program_5_debug_output = "";//----------------------DEBUG
 
     int tk_num = 0;
     int scheme_count=0;
@@ -110,4 +115,4 @@ private:
                                   "MULTIPLY","ADD","FACTS","RULES","QUERIES","ID","STRING","EOF"};
 };
 
-#endif //PROJECT_04_DATALOGPROGRAM_H
+#endif //PROJECT_05_DATALOGPROGRAM_H

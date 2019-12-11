@@ -2,8 +2,8 @@
 // Created by OmarB on 11/16/2019.
 //
 
-#ifndef PROJECT_04_TUPLE_H
-#define PROJECT_04_TUPLE_H
+#ifndef PROJECT_05_TUPLE_H
+#define PROJECT_05_TUPLE_H
 #include <fstream>
 #include <iostream>//for output ---- delete later
 #include <vector>
@@ -24,4 +24,4 @@ private:
     string var_name;
 };
 
-#endif //PROJECT_04_TUPLE_H
+#endif //PROJECT_05_TUPLE_H
