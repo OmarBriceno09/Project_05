@@ -61,8 +61,11 @@ private:
 
     void evaluate_query(vector<string>&, vector<string>&, int, string);//new
     void evaluate_predicates(vector<string>&,vector<string>&, Relation&);
+    void evaluate_graph_rules(); //new
     int evaluate_all_rules(); // new
     bool evaluate_rule(Rule&); // new
+
+    void program_5_debug(Graph&);
 
     void headPredicate(int&, vector<string>&, vector<string>&, vector<int>&, string&);//a
 

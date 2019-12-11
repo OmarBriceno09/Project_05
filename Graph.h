@@ -18,13 +18,24 @@ public:
     void addNode(Node&);
     string toStringDependencyGraph();
     string toStringReverseDependencyGraph();
+    string toStringPostOrderList();
+    string toStringSCC();
     void constructGraphs();
-    void constructDependencyGraph();
+    void constructDependencyGraph(vector<Node>&);
     void constructReverseDependencyGraph();
 
 private:
     vector<Node> dependency_nodes;
     vector<Node> reverse_dependency_nodes;
+    vector<Node> dep_nodes_copy;
+    vector<Node> post_order_list;
+    vector<vector<Node>> SCC_lists;
+    string toStringChosenGraph(vector<Node>&);
+    void addNodetoPostOrder(Node&);
+    void RevDepPO_DFS(vector<Node>&);
+    void DFSUntil(Node*);
+    void DepDFS(vector<Node>&);
+    void DFSforSCC(Node*, vector<Node>&);
 };
 
 

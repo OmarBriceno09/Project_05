@@ -15,6 +15,7 @@ public:
     Node(int, Rule*);
     ~Node();
     string toString_rule();
+    string toString_thisRule();
     string get_m_rel_name();
     int get_id();
     void checkNode(Node*);

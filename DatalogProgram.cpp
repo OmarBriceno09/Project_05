@@ -28,10 +28,8 @@ DatalogProgram::DatalogProgram(vector<string> &token_type, vector<string> &token
                             if (token_type[tk_num] == "COLON") {
                                 //rule_flow += token_input[tk_num]; //begin fact flow - comment out for project 4
                                 tk_num++;
-                                project_4_output+="Rule Evaluation\n";
                                 ruleList(tk_num, token_type, token_input, token_linenum);
-                                int passes = evaluate_all_rules();//evaluate all rules once outside of rule list
-                                project_4_output+="\nSchemes populated after "+to_string(passes)+" passes through the Rules.\n\n";
+                                evaluate_graph_rules();
                                 out_flow +=
                                         to_string(rule_count) + ")" + rule_flow; //append rule flow with nums of facts
                                 if (token_type[tk_num] == "QUERIES") { //QUERIES COLON query queryList
@@ -122,30 +120,59 @@ void DatalogProgram::ruleList(int &tk_num, vector<string> &token_type, vector<st
     }
 }
 
-int DatalogProgram::evaluate_all_rules() {
-    /*bool changed=true;
-    vector<bool> evaluations_changed; //<- if all evaluated rules are 0, then it changed becomes false;
-    int iter=0;
-    while(changed){
-        iter++;
-        //evaluations_changed.empty();
-        evaluations_changed.clear();
-        for(int i=0;i<(int)rule_list.size();i++){
-            bool temp = evaluate_rule(rule_list.at(i));
-            evaluations_changed.push_back(temp);// each rule is evaluated, and its result
-        }
-        if(all_of(evaluations_changed.begin(), evaluations_changed.end(), [](bool v) { return !v; }))
-            changed = false;//return if all evals return a flase change.
-    }
-    return iter;*/
+void DatalogProgram::program_5_debug(Graph & graph) {
+    program_5_debug_output+=graph.toStringDependencyGraph();
+    program_5_debug_output+='\n';
+    program_5_debug_output+=graph.toStringReverseDependencyGraph();
+    program_5_debug_output+='\n';
+    program_5_debug_output+=graph.toStringPostOrderList();
+    program_5_debug_output+='\n';
+    program_5_debug_output+=graph.toStringSCC();
+}
+
+void DatalogProgram::evaluate_graph_rules(){
     Graph graph;
     for(int i=0;i<(int)rule_list.size();i++){
         graph.evaluate_Rule(rule_list.at(i));
     }
     graph.constructGraphs();
-    program_5_debug_output+=graph.toStringDependencyGraph();
-    program_5_debug_output+=graph.toStringReverseDependencyGraph();
-    return 1;
+    program_5_debug(graph);
+    //  EVALUATE RULES PROPERLY
+    project_4_output+=graph.toStringDependencyGraph()+'\n';
+    project_4_output+="Rule Evaluation\n";
+    int passes = evaluate_all_rules();//evaluate all rules once outside of rule list
+    project_4_output+="\nSchemes populated after "+to_string(passes)+" passes through the Rules.\n\n";
+}
+
+int DatalogProgram::evaluate_all_rules() {
+bool changed=true;
+vector<bool> evaluations_changed; //<- if all evaluated rules are 0, then it changed becomes false;
+int iter=0;
+while(changed){
+    iter++;
+    //evaluations_changed.empty();
+    evaluations_changed.clear();
+    for(int i=0;i<(int)rule_list.size();i++){
+        bool temp = evaluate_rule(rule_list.at(i));
+        evaluations_changed.push_back(temp);// each rule is evaluated, and its result
+    }
+    if(all_of(evaluations_changed.begin(), evaluations_changed.end(), [](bool v) { return !v; }))
+        changed = false;//return if all evals return a flase change.
+}
+return iter;
+/*Graph graph;
+for(int i=0;i<(int)rule_list.size();i++){
+    graph.evaluate_Rule(rule_list.at(i));
+}
+graph.constructGraphs();
+program_5_debug_output+=graph.toStringDependencyGraph();
+program_5_debug_output+='\n';
+program_5_debug_output+=graph.toStringReverseDependencyGraph();
+program_5_debug_output+='\n';
+program_5_debug_output+=graph.toStringPostOrderList();
+program_5_debug_output+='\n';
+program_5_debug_output+=graph.toStringSCC();
+return 1;*/
 }
 
 

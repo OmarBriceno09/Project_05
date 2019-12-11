@@ -27,17 +27,21 @@ Node::~Node() {// safely gets rid of node pointers when destructed...
 
 string Node::toString_rule() {
     string the_output="";
-    the_output = "R"+to_string(id)+"["+to_string(visited)+"]:";
+    the_output = "R"+to_string(id)+":";
     Node c_node;
     for(auto it=node_ptr_set.begin();it!=node_ptr_set.end();++it){
         c_node = (**it);
-        the_output+="R"+to_string(c_node.get_id())+"["+to_string(c_node.was_visited())+"]";
+        the_output+="R"+to_string(c_node.get_id())/*+"["+to_string(c_node.was_visited())+"]"*/;
         if (next(it)!=node_ptr_set.end())
             the_output+=",";
     }
     //this_rule->main_relation_name to get main rel name...
     //this_rule->relations_names.at(i) to get all dependent names in rule...
     return the_output;
+}
+
+string Node::toString_thisRule() {
+    return this_rule->out_rule();
 }
 
 string Node::get_m_rel_name() {
