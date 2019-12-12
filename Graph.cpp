@@ -65,8 +65,20 @@ string Graph::toStringSCC() {
     return the_output;
 }
 
+string Graph::toStringSCCat(int i){
+    string the_output="";
+        for(int j=0;j<(int)SCC_lists.at(i).size();j++){
+            the_output+="R"+to_string(SCC_lists.at(i).at(j).get_id());
+            if(j != (int)SCC_lists.at(i).size()-1)
+                the_output+=',';
+        }
+    return the_output;
+}
+
 void Graph::constructGraphs() {
     constructDependencyGraph(dependency_nodes);// have to do this again for post node list ;(
+    cout<<"In graph, is node at 0 self dependent?"<<to_string(dependency_nodes.at(0).selfDependent())<<endl;
+    cout<<"In graph, is node at 2 self dependent?"<<to_string(dependency_nodes.at(2).selfDependent())<<endl;
     constructReverseDependencyGraph();
     RevDepPO_DFS(reverse_dependency_nodes);// after post order graph is constructed
     constructDependencyGraph(post_order_list);// link nodes
@@ -136,4 +148,16 @@ void Graph::DFSforSCC(Node *node, vector<Node>& v_list) {
         c_node = nullptr;
         delete c_node;
     }
+}
+
+vector<Node> Graph::get_SCC(int i){
+    return SCC_lists.at(i);
+}
+
+int Graph::get_SCC_size(){
+    return SCC_lists.size();
+}
+
+bool Graph::SelfDepencencyAt(int i){
+    return  dependency_nodes.at(i).selfDependent();
 }

@@ -23,6 +23,8 @@ public:
     set <Node*> node_ptr_set;
     void visiting();
     bool was_visited();
+    bool selfDependent();
+    Rule get_rule();
 private:
     int id;
     bool visited= false;

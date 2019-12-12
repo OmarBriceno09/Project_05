@@ -60,6 +60,18 @@ void Node::checkNode(Node *c_node) {
     }
 }
 
+bool Node::selfDependent(){
+    bool selfdepends=false;
+    Node c_node;
+    for(auto it=node_ptr_set.begin();it!=node_ptr_set.end();++it){
+        c_node = (**it);
+        cout<<" this id: "<<to_string(id)<<" || vs other id: "<<to_string(c_node.get_id())<<endl;
+        if (id == c_node.get_id())
+            selfdepends=true;
+    }
+    return selfdepends;
+}
+
 void Node::addEdge(Node *a_node) {
     node_ptr_set.insert(a_node);
 }
@@ -70,4 +82,8 @@ void Node::visiting() {
 
 bool Node::was_visited() {
     return visited;
+}
+
+Rule Node::get_rule(){
+    return *this_rule;
 }

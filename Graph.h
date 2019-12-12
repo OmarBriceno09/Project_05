@@ -20,9 +20,13 @@ public:
     string toStringReverseDependencyGraph();
     string toStringPostOrderList();
     string toStringSCC();
+    string toStringSCCat(int);
     void constructGraphs();
     void constructDependencyGraph(vector<Node>&);
     void constructReverseDependencyGraph();
+    vector<Node> get_SCC(int);
+    int get_SCC_size();
+    bool SelfDepencencyAt(int);
 
 private:
     vector<Node> dependency_nodes;

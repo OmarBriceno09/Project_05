@@ -13,6 +13,7 @@ using namespace std;
 //headPredicate COLON_DASH predicate predicateList PERIOD
 class Rule {
 public:
+    Rule();
     Rule(int&, vector<string>&, vector<string>&, vector<int>&);
     ~Rule();
 

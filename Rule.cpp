@@ -6,6 +6,10 @@
 
 int Rule::rule_count{0};
 
+Rule::Rule(){
+    
+}
+
 Rule::Rule(int &tk_num, vector<string> &token_type, vector<string> &token_input, vector<int> &token_linenum) {
     main_relation_name = token_input[tk_num];
     the_rule(tk_num,token_type,token_input,token_linenum);

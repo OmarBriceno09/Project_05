@@ -140,39 +140,33 @@ void DatalogProgram::evaluate_graph_rules(){
     //  EVALUATE RULES PROPERLY
     project_4_output+=graph.toStringDependencyGraph()+'\n';
     project_4_output+="Rule Evaluation\n";
-    int passes = evaluate_all_rules();//evaluate all rules once outside of rule list
-    project_4_output+="\nSchemes populated after "+to_string(passes)+" passes through the Rules.\n\n";
+    for (int i=0;i<(int)graph.get_SCC_size();i++){
+        project_4_output+="SCC: "+graph.toStringSCCat(i)+'\n';
+        vector<Node> scc = graph.get_SCC(i);
+        int passes = evaluate_all_rules(scc,graph);//evaluate all rules once outside of rule list
+        project_4_output+=to_string(passes)+" passes:"+graph.toStringSCCat(i)+"\n";
+    }
 }
 
-int DatalogProgram::evaluate_all_rules() {
+int DatalogProgram::evaluate_all_rules(vector<Node>& scc_vect, Graph& graph) {
 bool changed=true;
 vector<bool> evaluations_changed; //<- if all evaluated rules are 0, then it changed becomes false;
 int iter=0;
 while(changed){
     iter++;
     //evaluations_changed.empty();
+    //cout<<"Self dependent: (keeps looping?)"<<scc_vect.selfDependent()<<endl;
     evaluations_changed.clear();
-    for(int i=0;i<(int)rule_list.size();i++){
-        bool temp = evaluate_rule(rule_list.at(i));
+    for(int i=0;i<(int)scc_vect.size();i++){
+        Rule rule = scc_vect.at(i).get_rule();
+        cout<<"Self dependent: (keeps looping?)"<<graph.SelfDepencencyAt(i)<<endl;//get id and find dependencies of other
+        bool temp = evaluate_rule(rule);
         evaluations_changed.push_back(temp);// each rule is evaluated, and its result
     }
     if(all_of(evaluations_changed.begin(), evaluations_changed.end(), [](bool v) { return !v; }))
         changed = false;//return if all evals return a flase change.
 }
 return iter;
-/*Graph graph;
-for(int i=0;i<(int)rule_list.size();i++){
-    graph.evaluate_Rule(rule_list.at(i));
-}
-graph.constructGraphs();
-program_5_debug_output+=graph.toStringDependencyGraph();
-program_5_debug_output+='\n';
-program_5_debug_output+=graph.toStringReverseDependencyGraph();
-program_5_debug_output+='\n';
-program_5_debug_output+=graph.toStringPostOrderList();
-program_5_debug_output+='\n';
-program_5_debug_output+=graph.toStringSCC();
-return 1;*/
 }
 
 
