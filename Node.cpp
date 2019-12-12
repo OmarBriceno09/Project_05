@@ -14,11 +14,10 @@ Node::Node(int nm, Rule* rule) {
 
 Node::~Node() {// safely gets rid of node pointers when destructed...
     Node* n_ptr;
-    for(auto it=node_ptr_set.begin();it!=node_ptr_set.end();++it){
-        n_ptr = (*it);
+    for(int i =0; i<(int)node_ptr_set.size();i++){
+        n_ptr = node_ptr_set.at(i);
         n_ptr = nullptr;
         delete n_ptr;
-
     }
     node_ptr_set.clear();
     this_rule = nullptr;
@@ -28,11 +27,9 @@ Node::~Node() {// safely gets rid of node pointers when destructed...
 string Node::toString_rule() {
     string the_output="";
     the_output = "R"+to_string(id)+":";
-    Node c_node;
-    for(auto it=node_ptr_set.begin();it!=node_ptr_set.end();++it){
-        c_node = (**it);
-        the_output+="R"+to_string(c_node.get_id())/*+"["+to_string(c_node.was_visited())+"]"*/;
-        if (next(it)!=node_ptr_set.end())
+    for(int i =0; i<(int)node_ptr_set.size();i++){
+        the_output+="R"+to_string(node_ptr_set.at(i)->get_id())/*+"["+to_string(c_node.was_visited())+"]"*/;
+        if(i<(int)node_ptr_set.size()-1)
             the_output+=",";
     }
     //this_rule->main_relation_name to get main rel name...
@@ -54,26 +51,29 @@ int Node::get_id() {
 
 void Node::checkNode(Node *c_node) {
     for(int i=0;i<(int)this_rule->relations_names.size();i++){
-        if(this_rule->relations_names.at(i) == c_node->get_m_rel_name()){
+        if(this_rule->relations_names.at(i) == c_node->get_m_rel_name()
+            && !(nodeExists(c_node->get_id()))){
             addEdge(c_node);
         }
     }
 }
 
-bool Node::selfDependent(){
-    bool selfdepends=false;
-    Node c_node;
-    for(auto it=node_ptr_set.begin();it!=node_ptr_set.end();++it){
-        c_node = (**it);
-        cout<<" this id: "<<to_string(id)<<" || vs other id: "<<to_string(c_node.get_id())<<endl;
-        if (id == c_node.get_id())
-            selfdepends=true;
+bool Node::nodeExists(int x) {
+    for(int i =0; i<(int)node_ptr_set.size();i++){
+        if(x == node_ptr_set.at(i)->get_id())
+            return true;
     }
-    return selfdepends;
+    return false;
+}
+
+bool Node::selfDependent(){
+    return self_dependent;
 }
 
 void Node::addEdge(Node *a_node) {
-    node_ptr_set.insert(a_node);
+    if (id == a_node->get_id())
+        self_dependent = true;
+    node_ptr_set.push_back(a_node);
 }
 
 void Node::visiting() {

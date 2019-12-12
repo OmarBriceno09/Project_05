@@ -139,31 +139,45 @@ void DatalogProgram::evaluate_graph_rules(){
     program_5_debug(graph);
     //  EVALUATE RULES PROPERLY
     project_4_output+=graph.toStringDependencyGraph()+'\n';
+    //cout<<"finito!!!"<<endl;
+    //cout<<graph.toStringSCC()<<endl;
     project_4_output+="Rule Evaluation\n";
     for (int i=0;i<(int)graph.get_SCC_size();i++){
         project_4_output+="SCC: "+graph.toStringSCCat(i)+'\n';
+        //cout<<"SCC: "<<graph.toStringSCCat(i)<<endl;
         vector<Node> scc = graph.get_SCC(i);
         int passes = evaluate_all_rules(scc,graph);//evaluate all rules once outside of rule list
-        project_4_output+=to_string(passes)+" passes:"+graph.toStringSCCat(i)+"\n";
+        project_4_output+=to_string(passes)+" passes: "+graph.toStringSCCat(i)+"\n";
     }
+    project_4_output+='\n';
 }
 
 int DatalogProgram::evaluate_all_rules(vector<Node>& scc_vect, Graph& graph) {
 bool changed=true;
 vector<bool> evaluations_changed; //<- if all evaluated rules are 0, then it changed becomes false;
+vector<bool> all_self_depencences;
 int iter=0;
 while(changed){
     iter++;
-    //evaluations_changed.empty();
-    //cout<<"Self dependent: (keeps looping?)"<<scc_vect.selfDependent()<<endl;
     evaluations_changed.clear();
     for(int i=0;i<(int)scc_vect.size();i++){
         Rule rule = scc_vect.at(i).get_rule();
-        cout<<"Self dependent: (keeps looping?)"<<graph.SelfDepencencyAt(i)<<endl;//get id and find dependencies of other
+        int dep_id = scc_vect.at(i).get_id();
+        //if(!graph.SelfDepencencyAt(dep_id))// if doesn't depend on itself
+        //    changed = false;                // git out ;(
         bool temp = evaluate_rule(rule);
+        bool single_run = true;
+        //cout<<rule.out_rule()<<endl;
+        //cout<<graph.NodeEdgeNum(dep_id)<<endl;
+        if (!graph.SelfDepencencyAt(dep_id)&&(graph.NodeEdgeNum(dep_id)<=1))
+            single_run = false;
+        all_self_depencences.push_back(single_run);
         evaluations_changed.push_back(temp);// each rule is evaluated, and its result
     }
-    if(all_of(evaluations_changed.begin(), evaluations_changed.end(), [](bool v) { return !v; }))
+    //cout<<"do all evaluations have new nodes?(F s): "<<(all_of(evaluations_changed.begin(), evaluations_changed.end(), [](bool v) { return !v; }))<<endl;
+    //cout<<"are all self_dependent?(if F then stop): "<<(all_of(all_self_depencences.begin(), all_self_depencences.end(), [](bool r) { return !r; }))<<endl;
+    if(all_of(evaluations_changed.begin(), evaluations_changed.end(), [](bool v) { return !v; })
+    || all_of(all_self_depencences.begin(), all_self_depencences.end(), [](bool r) { return !r; }))
         changed = false;//return if all evals return a flase change.
 }
 return iter;
@@ -227,7 +241,9 @@ bool DatalogProgram::evaluate_rule(Rule& rule) {
     //cout<<"after UNION"<<endl;
     //cout<<"----------------------------------------------"<<endl;
     relation_list.at(main_rel_indx).rename(rule_rel_att_tkns, saved_rule_rel_att);
+    //cout<<"renamed, now out rule"<<endl;
     project_4_output+= rule.out_rule()+"\n";
+    //cout<<"creating new tuple string"<<endl;
     //cout<<relation_list.at(main_rel_indx).toStringNewTuples()<<endl;
     //cout<<"tostring new tuples"<<endl;
     project_4_output+=relation_list.at(main_rel_indx).toStringNewTuples();//.toStringNewTuples();

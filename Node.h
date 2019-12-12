@@ -20,7 +20,7 @@ public:
     int get_id();
     void checkNode(Node*);
     void addEdge(Node*);
-    set <Node*> node_ptr_set;
+    vector <Node*> node_ptr_set;
     void visiting();
     bool was_visited();
     bool selfDependent();
@@ -28,7 +28,9 @@ public:
 private:
     int id;
     bool visited= false;
+    bool self_dependent = false;
     Rule *this_rule;
+    bool nodeExists(int);
 };
 
 

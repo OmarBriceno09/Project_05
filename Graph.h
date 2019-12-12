@@ -27,6 +27,8 @@ public:
     vector<Node> get_SCC(int);
     int get_SCC_size();
     bool SelfDepencencyAt(int);
+    int NodeEdgeNum(int);
+    //Node get_Dep_node_at(int);
 
 private:
     vector<Node> dependency_nodes;
@@ -40,6 +42,7 @@ private:
     void DFSUntil(Node*);
     void DepDFS(vector<Node>&);
     void DFSforSCC(Node*, vector<Node>&);
+    void push_to_right_place(Node&, vector<Node>&);
 };
 
 

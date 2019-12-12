@@ -9,14 +9,6 @@ Relation::Relation(string nm) {
 }
 
 Relation::~Relation() {
-    Tuple* d_tpl;
-    for(auto it=new_inserted_tuples.begin();it!=new_inserted_tuples.end();++it){
-        d_tpl = (*it);
-        d_tpl = nullptr;
-        delete d_tpl;
-
-    }
-    new_inserted_tuples.clear();
 }
 
 int Relation::getCols() {
@@ -52,9 +44,12 @@ string Relation::toStringTuples() {
 }
 
 string Relation::toStringNewTuples() {//-------------------------CHANGE THIS ONE DO IT !!! AHHH NOT IN ORDER!!!--------
-    /*Tuple prt_tpl;
+    //string debug_str="";//debug ----------------------------
+    string the_output="";
+    Tuple prt_tpl;
+    //int i = 0;
     for(auto it=new_inserted_tuples.begin();it!=new_inserted_tuples.end();++it){
-        prt_tpl = (**it);
+        prt_tpl = (*it);
         the_output+="  ";
         for(int j=0; j<(int)attributes.size();j++){
             the_output += attributes.at(j)+"="+prt_tpl.at(j);
@@ -62,20 +57,12 @@ string Relation::toStringNewTuples() {//-------------------------CHANGE THIS ONE
                 the_output+=", ";
         }
         the_output+= "\n";
-    }*/
-    string the_output="";
-    Tuple prt_tpl;
-    for(auto it=tpl_list.begin();it!=tpl_list.end();++it){
-        prt_tpl = (*it);
-        if (foundTuple(prt_tpl)) {
-            the_output += "  ";
-            for (int j = 0; j < (int) attributes.size(); j++) {
-                the_output += attributes.at(j) + "=" + prt_tpl.at(j);
-                if (j != (int) attributes.size() - 1)
-                    the_output += ", ";
-            }
-            the_output += "\n";
-        }
+        //deubg.----------------------.
+        /*i++;
+        debug_str.clear();
+        debug_str="in outNewString of rel "+name+": "+to_string(i)+" out of "+to_string(new_inserted_tuples.size());
+        cout <<debug_str<< "\t\r" << std::flush;*/
+        //deubg...
     }
     return the_output;
 }
@@ -199,7 +186,7 @@ void Relation::project(vector <string>& tokens,vector<string>& input) {
         }
     }
 
-    string debug_str="";//-----------------------------------------------------------------
+    //string debug_str="";//-----------------------------------------------------------------
     Relation temp_relation("t");    //creates a temp relation
     temp_relation.setAttribute_as_vector(attributes);
     Tuple p_tpl;
@@ -238,17 +225,14 @@ void Relation::project_for_lab(vector <string>& tokens,vector<string>& input) { 
 
 int Relation::rel_union(Relation& rel) {
     // cout<<"----in UNION of relation class, new tuples ----------"<<endl;
-    Tuple* d_tpl;
-    for(auto it=new_inserted_tuples.begin();it!=new_inserted_tuples.end();++it){
-        d_tpl = (*it);
-        d_tpl = nullptr;
-        delete d_tpl;
-    }
+    //string debug_str="";
+
     new_inserted_tuples.clear();
 
     if (attributesMatch(rel.getAttributes_vector())){
         Tuple organizedTpl;
         Tuple s_tpl;
+        //int i =0; //debug----------------------------------------------------
         for(auto it=rel.tpl_list.begin();it!=rel.tpl_list.end();++it) {
             organizedTpl.clear();
             s_tpl = (*it);
@@ -260,15 +244,12 @@ int Relation::rel_union(Relation& rel) {
                 }
             }
             if(setTuple(organizedTpl)){
-                Tuple *tpl = new Tuple;
-                *tpl = organizedTpl;
-                new_inserted_tuples.insert(tpl);
-                tpl = nullptr;
-                delete tpl;
+                new_inserted_tuples.insert(organizedTpl);
             }
             //deubg..
-            /*debug_str.clear();
-            debug_str="in union of rel "+name+": "+to_string(i)+" out of "+to_string(saved_list.size());
+            /*i++;
+            debug_str.clear();
+            debug_str="in union of rel "+name+": "+to_string(i)+" out of "+to_string(rel.tpl_list.size());
             cout <<debug_str<< "\t\r" << std::flush;*/
             //deubg...
         }
@@ -418,11 +399,11 @@ bool Relation::foundIndex(vector<int> & vect, int val) {
     return false;
 }
 
-bool Relation::foundTuple(Tuple& tpl) {
+/*bool Relation::foundTuple(Tuple& tpl) {
     Tuple prt_tpl;
     for(auto it=new_inserted_tuples.begin();it!=new_inserted_tuples.end();++it){
         prt_tpl = (**it);
         if (prt_tpl == tpl){return true;}
     }
     return false;
-}
+}*/

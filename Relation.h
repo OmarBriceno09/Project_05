@@ -57,7 +57,7 @@ private:
     vector <Tuple> var_instance_list; //will store list of tuples, in each 'tuple' it will state the index, or indexes of that var
     //JUST USE SETS
     //vector <int> union_n_inserted_tuples_indexes;
-    set <Tuple*> new_inserted_tuples;//JUST USE SETS
+    set <Tuple> new_inserted_tuples;//JUST USE SETS
     //from query
     //bool does_match_tuples(Tuple);
     bool attributesMatch(vector<string>&);
